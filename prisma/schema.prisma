@@ -1,0 +1,60 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       Int     @id @default(autoincrement())
+  username String  @unique
+  coins    Int     @default(0)
+  drives   Drive[]
+  cards    Chest[]
+  rides    Rider[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Drive {
+  id            Int      @id @default(autoincrement())
+  departureTime DateTime
+  driver        User     @relation(fields: [driverId], references: [id])
+  driverId      Int
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  riders Rider[]
+}
+
+model Chest {
+  id       Int     @id @default(autoincrement())
+  cardName String
+  isOpened Boolean @default(false)
+
+  user   User @relation(fields: [userId], references: [id])
+  userId Int
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Rider {
+  id Int @id @default(autoincrement())
+
+  user   User @relation(fields: [userId], references: [id])
+  userId Int
+
+  drive   Drive? @relation(fields: [driveId], references: [id])
+  driveId Int?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
