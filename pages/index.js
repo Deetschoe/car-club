@@ -73,6 +73,7 @@ export default function Home() {
     }
 
     return {
+      hours,
       minutes,
       seconds
     };
@@ -85,14 +86,14 @@ export default function Home() {
     }, 1);
     const secondOne = setInterval(() => {
       getDriveDetails(driveId);
-
     }, 1000);
+
     return () => {
       clearInterval(timer)
-      clearInterval(secondOne)
 
     };
   }, [departureTime]);
+
   useEffect(() => {
     const timer = setInterval(() => {
       getAllDriveDetails();
@@ -103,7 +104,7 @@ export default function Home() {
       clearInterval(timer)
 
     };
-  }, []);
+  }, [drives, driveId, departureTime]);
   const addCoin = async () => {
     try {
       await axios.post("/api/coins/add", {
@@ -133,7 +134,7 @@ export default function Home() {
         username: character,
         time: time,
       }).then((result) => {
-    
+        setDriveId(result.data.id)
         setDepartureTime(result.data.departureTime)
       })
 
@@ -149,7 +150,9 @@ export default function Home() {
     if(specificID != undefined){ 
     try {
       const { data } = await axios.get(`/api/drive/${parseInt(specificID)}`);
+      
       setDriveDeets(data);
+      console.log(data)
       setDepartureTime(data.departureTime)
 
     } catch (err) {
@@ -161,6 +164,18 @@ export default function Home() {
     try {
       const { data } = await axios.get(`/api/drive/all`);
       setDrives(data)
+      // console.log(data)
+      // console.log(data.some((drive) => drive.driver.username == character))
+      data.map((drive) => {
+      console.log(drive.driver.username, character)
+      if(drive.driver.username == character) {
+        console.log("already have ride")
+        setDriveId(drive.id)
+        setDepartureTime(drive.departureTime)   
+      }
+      
+    })
+
     } catch (err) {
       console.error(err);
     }
@@ -218,7 +233,10 @@ export default function Home() {
                 }}
               >
                 {users.map((user) => (
-                  <div onClick={() => setCharacter(user.username)} style={{ cursor: "pointer" }}>
+                  <div onClick={() => {
+                    setCharacter(user.username)
+                    getAllDriveDetails()
+                  }} style={{ cursor: "pointer" }}>
                     <img
                       style={{ width: 96, height: 96, objectFit: "cover", borderRadius: 8 }}
                       src={user.profilePhoto}
@@ -333,7 +351,32 @@ export default function Home() {
                     {timeLeft.seconds}
                   </p>
                   <div style={{ width: "100%", height: "2px", backgroundColor: "#000" }}></div>
-                  <p style={{fontSize: 22}}>Crew: {driveId}</p>
+                  <p style={{fontSize: 18}}>Crew:</p>
+                  <div style={{display: "flex", alignContent: "center"}}>
+
+                <img style={{width: 64, height: 64, borderRadius: 32}} src={users.find((user) => user.username == character).profilePhoto}/>
+              <div style={{display: "flex", alignContent: "center", justifyContent: "center", marginLeft: 16, flexDirection: "column"}}>
+              <p style={{fontSize: 24, fontWeight: 500}} onClick={() => console.log(rider)}>
+                    {users.find((user) => user.username == character).username}
+                  </p>
+                  <p style={{fontSize: 18, fontWeight: 500}} onClick={() => console.log(rider)}>
+                  {drives.find((drive) => drive.id == driveId).driver.coins} Tokens
+                  </p>
+              </div>
+               </div>
+                  {drives.find((drive) => drive.id == driveId)?.riders?.map((rider => 
+              <div style={{display: "flex", alignContent: "center"}}>
+                <img style={{width: 64, height: 64, borderRadius: 32}} src={users.find((user) => user.id == rider.userId).profilePhoto}/>
+              <div style={{display: "flex", alignContent: "center", justifyContent: "center", marginLeft: 16, flexDirection: "column"}}>
+              <p style={{fontSize: 24, fontWeight: 500}} onClick={() => console.log(rider)}>
+                    {users.find((user) => user.id == rider.userId).username}
+                  </p>
+                  <p style={{fontSize: 18, fontWeight: 500}} onClick={() => console.log(rider)}>
+                    {rider?.user?.coins} Tokens
+                  </p>
+              </div>
+               </div>
+                ))}
                   {!driveDeets?.hasLeft && <p>{driveId}</p>}
                 </div>
               )}
