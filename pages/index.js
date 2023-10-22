@@ -273,10 +273,57 @@ export default function Home() {
           </div>
         )}
 
-        {!myUser?.isDriver && (
-          <div>
-            <p>Dieter's view</p>
-          </div>
+
+
+        {!myUser?.isDriver && character != "" && (
+
+ <Div100vh style={{ marginLeft: "25", backgroundColor: "#000" }}>
+                            <p
+                style={{
+                  color: "white",
+                  marginLeft: 16,
+                  marginRight: 16,
+                  paddingTop: 8,
+                  paddingBottom: 16,
+                  fontFamily: "Billy",
+                  fontSize: 24,
+                }}
+              >
+                good morning
+              </p>
+              <Div100vh style={{  
+                borderRadius: "50", 
+                backgroundColor: "white",
+                borderRadius: 21,   
+                display: "flex",
+                borderRadius: "24px 24px 0px 0px",
+              }}>
+                <p style=
+                {{        
+                fontFamily: "Billy", 
+                fontSize: 32,
+                paddingTop: 30, 
+                justifyContent: "left",
+                marginLeft: 16, 
+                color: "#000"
+                }}>
+                  Select Your Car Club
+                  </p>
+                  <div>
+                    <p></p>
+                  </div>
+              </Div100vh>
+              </Div100vh>
+
+// display: "flex",
+// justifyContent: "space-between",
+// flexDirection: "column",
+// gap: 16,
+// padding: 16,
+// height: "100%",
+// backgroundColor: "#fff",
+// borderRadius: "24px 24px 0px 0px",
+
         )}
       </main>
     </>
