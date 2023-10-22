@@ -2,7 +2,7 @@
 {
     "username": "Deet",
    "profilePhoto": "profilePhoto/deet.jpg",
-   "isDriver": true
+   "isDriver": true,
    "car": "cars/deet.png"
    
 },
@@ -16,7 +16,7 @@
 {
     "username": "Thomas",
    "profilePhoto": "profilePhoto/thomas.jpg",
-   "isDriver": true
+   "isDriver": true,
    "car": "cars/thomas.png"
 
    
@@ -31,7 +31,7 @@
 {
     "username": "Dev",
    "profilePhoto": "profilePhoto/dev.jpg",
-   "isDriver": true
+   "isDriver": true,
     "car": "cars/dev.png"
    
 },
