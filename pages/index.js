@@ -4,17 +4,48 @@ import { Inter } from "next/font/google";
 import styles from "@/styles/Home.module.css";
 import users from "../users.json";
 import Div100vh from "react-div-100vh";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import TimePicker from "../components/TimePicker";
 import axios from "axios"
 const inter = Inter({ subsets: ["latin"] });
+import dayjs from 'dayjs';
 
 export default function Home() {
   const [time, setTime] = useState(null);
   const [departureTime, setDepartureTime] = useState(null);
+  const [driveId, setDriveId] = useState();
 
   const [character, setCharacter] = useState("");
   const myUser = users.find((user) => user.username === character);
+
+  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
+
+  function calculateTimeLeft() {
+    const diff = dayjs(departureTime).diff(dayjs(), "seconds");
+    const minutes = Math.floor(diff / 60);
+    const seconds = Math.floor(diff % 60);
+    
+    return {
+      minutes,
+      seconds
+    };
+  }
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTimeLeft(calculateTimeLeft());
+
+    }, 1);
+    const secondOne = setInterval(() => {
+      getDriveDetails(driveId);
+
+    }, 1000);
+    return () => {
+      clearInterval(timer)
+      clearInterval(secondOne)
+
+    };
+  }, [departureTime]);
 
   const addCoin = async () => {
     try {
@@ -35,6 +66,9 @@ export default function Home() {
         time: time,
       }).then((result) => {
         console.log(result.data)
+        console.log("we're here")
+        setDriveId(result.data.id)
+    
         setDepartureTime(result.data.departureTime)
       })
 
@@ -43,6 +77,21 @@ export default function Home() {
       console.error(err);
     }
   };
+
+  const [driveDeets, setDriveDeets] = useState();
+
+  const getDriveDetails = async (specificID) => {
+    if(specificID != undefined){ 
+    try {
+      const { data } = await axios.get(`/api/drive/${parseInt(specificID)}`);
+      console.log(data)
+      setDriveDeets(data);
+      setDepartureTime(data.departureTime)
+
+    } catch (err) {
+      console.error(err);
+    }}
+  }
 
   return (
     <>
@@ -128,9 +177,10 @@ export default function Home() {
                   fontSize: 24,
                 }}
               >
-                good morning
+                good morning 
               </p>
-              <div
+              {departureTime == null ?
+              (<div
                 style={{
                   display: "flex",
                   justifyContent: "space-between",
@@ -180,7 +230,23 @@ export default function Home() {
                     </div>
                   </div>
                 </div>
-              </div>
+              </div>) : (
+              <div               
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: 16,
+                padding: 16,
+                height: "100%",
+                backgroundColor: "#fff",
+                borderRadius: "24px 24px 0px 0px",
+              }}>
+                <p style={{color: "#000", fontSize: 96, width: "100%", textAlign: "center", fontWeight: 600}}>{timeLeft.minutes}:{timeLeft.seconds < 10 && ("0")}{timeLeft.seconds}</p>
+                <div style={{width: "100%", height: "2px", backgroundColor: "#000"}}></div>
+                <p>Crew: {driveId}</p>
+                {!driveDeets?.hasLeft && (<p>{driveId}</p>)}
+              </div>)}
+              
             </Div100vh>
           </div>
         )}
