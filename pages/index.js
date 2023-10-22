@@ -20,20 +20,9 @@ export default function Home() {
   const drivers = users.filter((user) => user.isDriver).map((user) => {
     const validDrive = drives?.find(drive => drive.driverId === user.id);
   
-    // console.log(validDrive)
     if(validDrive) {
       const date = dayjs(validDrive.departureTime);
 
-
-      // let hours = date.getUTCHours();
-      // const minutes = date.getUTCMinutes().toString().padStart(2, '0');
-      // const period = hours >= 12 ? 'PM' : 'AM';
-      
-      // // Convert to 12-hour format
-      // hours = hours % 12;
-      // // To handle case of midnight
-      // hours = hours || 12;
-      
       const formattedTime = date.format("HH:mm")
       return {
         ...user,
