@@ -14,7 +14,7 @@ export default function Home() {
   const [time, setTime] = useState(null);
   const [departureTime, setDepartureTime] = useState(null);
   const [driveId, setDriveId] = useState();
-  const [drives, setDrives] = useState();
+  const [drives, setDrives] = useState([]);
 
   const [character, setCharacter] = useState("");
   const myUser = users.find((user) => user.username === character);
@@ -49,7 +49,7 @@ export default function Home() {
   }, [departureTime]);
   useEffect(() => {
     const timer = setInterval(() => {
-      setDrives(getAllDriveDetails());
+      getAllDriveDetails();
 
     }, 1000);
 
@@ -108,7 +108,7 @@ export default function Home() {
     try {
       const { data } = await axios.get(`/api/drive/all`);
       console.log(data)
-      return data
+      setDrives(data)
     } catch (err) {
       console.error(err);
     }
@@ -298,7 +298,9 @@ export default function Home() {
                 borderRadius: "24px 24px 0px 0px",
                 flexDirection: "column",
               }}>
-                <p style=
+                <p
+                onClick={() => console.log(drives)}
+                style=
                 {{        
                 fontFamily: "Billy", 
                 fontSize: 32,

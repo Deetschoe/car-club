@@ -1,8 +1,9 @@
 import prisma from "@/lib/db";
+import dayjs from "dayjs";
 
 export default async function handler(req, res) {
   const drives = await prisma.drive.findMany({
-    where: { departureTime: { gte: new Date().setHours(0, 0, 0, 0) } },
+    where: { departureTime: { gte: dayjs().startOf("day").toDate() } },
     include: { driver: true, riders: true },
   });
 
