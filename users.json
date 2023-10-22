@@ -1,30 +1,32 @@
+[
 {
-    "username" : "Deet",
+    "username": "Deet",
    "profilePhoto": "profilePhoto/deet.jpg"
    
-}
+},
 {
-    "username" "Nila",
+    "username": "Nila",
    "profilePhoto": "profilePhoto/nila.jpg"
    
-}
+},
 {
-    "username" "Thomas",
+    "username": "Thomas",
    "profilePhoto": "profilePhoto/thomas.jpg"
    
-}
+},
 {
-    "username" "Fayd",
+    "username": "Fayd",
    "profilePhoto": "profilePhoto/fayd.jpg"
    
-}
+},
 {
-    "username" "Dev",
+    "username": "Dev",
    "profilePhoto": "profilePhoto/dev.jpg"
    
-}
+},
 {
-    "username" "JC",
+    "username": "JC",
    "profilePhoto": "profilePhoto/jc.jpg"
    
 }
+]
