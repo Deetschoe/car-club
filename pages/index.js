@@ -369,7 +369,7 @@ export default function Home() {
                                           color: "#FFD500",
                                           fontSize: 72,
                                           textShadow: "2px 2px 12 px rgba(12, 2, 2, 1)"
-                                      }}>{driver?.departureTime}</b>
+                                      }}>{dayjs(driver?.departureTime).format("HH:mm")}</b>
                   
                                     <img
                                         style={{position: "absolute", right: 12, bottom: 2, maxWidth: 175, objectFit: "cover"}}
