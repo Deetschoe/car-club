@@ -1,4 +1,7 @@
+import dayjs from 'dayjs';
 import React, { useEffect, useRef } from 'react';
+import customParseFormat from "dayjs/plugin/customParseFormat";
+dayjs.extend(customParseFormat);
 
 const TimePicker = ({ onTimeChange }) => {
   const inputRef = useRef(null);
@@ -8,7 +11,7 @@ const TimePicker = ({ onTimeChange }) => {
   }, []);
 
   const handleTimeChange = (event) => {
-    onTimeChange(event.target.value);
+    onTimeChange(dayjs(event.target.value, "HH:mm").toDate());
   };
 
   return (

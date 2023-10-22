@@ -6,11 +6,12 @@ import users from "../users.json";
 import Div100vh from "react-div-100vh";
 import { useState } from "react";
 import TimePicker from "../components/TimePicker";
-
+import axios from "axios"
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
-  const [time, setTime] = useState('');
+  const [time, setTime] = useState(null);
+  const [departureTime, setDepartureTime] = useState(null);
 
   const [character, setCharacter] = useState("");
   const myUser = users.find((user) => user.username === character);
@@ -32,7 +33,12 @@ export default function Home() {
       await axios.post("/api/drive/create", {
         username: character,
         time: time,
-      });
+      }).then((result) => {
+        console.log(result.data)
+        setDepartureTime(result.data.departureTime)
+      })
+
+
     } catch (err) {
       console.error(err);
     }
@@ -153,7 +159,7 @@ export default function Home() {
                       paddingBottom: 16,
                     }}
                   >
-                    <p style={{ fontSize: 24, fontWeight: 500 }}>Confirm Driving Time</p>
+                    <p onClick={confirmDrivingTime} style={{ fontSize: 24, fontWeight: 500 }}>Confirm Driving Time</p>
                   </div>
                   <div>
                     <div
