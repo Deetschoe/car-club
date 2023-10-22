@@ -55,7 +55,6 @@ export default function Home() {
 
     return () => {
       clearInterval(timer)
-      clearInterval(secondOne)
 
     };
   }, []);
