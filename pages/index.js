@@ -307,7 +307,7 @@ export default function Home() {
                     {timeLeft.seconds}
                   </p>
                   <div style={{ width: "100%", height: "2px", backgroundColor: "#000" }}></div>
-                  <p>Crew: {driveId}</p>
+                  <p style={{fontSize: 22}}>Crew: {driveId}</p>
                   {!driveDeets?.hasLeft && <p>{driveId}</p>}
                 </div>
               )}
