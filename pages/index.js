@@ -13,6 +13,17 @@ export default function Home() {
   const [character, setCharacter] = useState("");
   const myUser = users.find((user) => user.username === character);
 
+  const addCoin = async () => {
+    try {
+      await axios.post("/api/coins/add", {
+        username: "Dev",
+        amount: 10,
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   return (
     <>
       <Head>
@@ -24,6 +35,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main style={{ fontFamily: "system-ui, Helvetica" }}>
+        <button onClick={addCoin}>Add</button>
         {character == "" && (
           <Div100vh
             style={{
