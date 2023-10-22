@@ -16,6 +16,39 @@ export default function Home() {
   const [driveId, setDriveId] = useState();
   const [drives, setDrives] = useState([]);
 
+  const drivers = users.filter((user) => user.isDriver).map((user) => {
+  
+    const validDrive = drives?.find(drive => drive.driverId === user.id);
+  
+    // console.log(validDrive)
+    if(validDrive) {
+      const date = new Date(validDrive.departureTime);
+
+
+      let hours = date.getUTCHours();
+      const minutes = date.getUTCMinutes().toString().padStart(2, '0');
+      const period = hours >= 12 ? 'PM' : 'AM';
+      
+      // Convert to 12-hour format
+      hours = hours % 12;
+      // To handle case of midnight
+      hours = hours || 12;
+      
+      const formattedTime = `${hours}:${minutes} ${period}`;
+      return {
+        ...user,
+        departureTime: formattedTime
+      };
+    
+    }
+    else {
+      return {
+      ...user,
+      departureTime: "--:--"
+    }}
+  });
+  
+
   const [character, setCharacter] = useState("");
   const myUser = users.find((user) => user.username === character);
 
@@ -76,9 +109,6 @@ export default function Home() {
         username: character,
         time: time,
       }).then((result) => {
-        console.log(result.data)
-        console.log("we're here")
-        setDriveId(result.data.id)
     
         setDepartureTime(result.data.departureTime)
       })
@@ -95,7 +125,6 @@ export default function Home() {
     if(specificID != undefined){ 
     try {
       const { data } = await axios.get(`/api/drive/${parseInt(specificID)}`);
-      console.log(data)
       setDriveDeets(data);
       setDepartureTime(data.departureTime)
 
@@ -107,7 +136,6 @@ export default function Home() {
   const getAllDriveDetails = async () => {
     try {
       const { data } = await axios.get(`/api/drive/all`);
-      console.log(data)
       setDrives(data)
     } catch (err) {
       console.error(err);
@@ -299,7 +327,6 @@ export default function Home() {
                 flexDirection: "column",
               }}>
                 <p
-                onClick={() => console.log(drives)}
                 style=
                 {{        
                 fontFamily: "Billy", 
@@ -308,7 +335,8 @@ export default function Home() {
                 justifyContent: "left",
                 marginLeft: 16, 
                 color: "#000",
-                }}>
+                }}
+                >
                   Select Your Car Club
                   </p>
                   <div
