@@ -14,6 +14,7 @@ export default function Home() {
   const [time, setTime] = useState(null);
   const [departureTime, setDepartureTime] = useState(null);
   const [driveId, setDriveId] = useState();
+  const [drives, setDrives] = useState();
 
   const [character, setCharacter] = useState("");
   const myUser = users.find((user) => user.username === character);
@@ -46,7 +47,18 @@ export default function Home() {
 
     };
   }, [departureTime]);
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setDrives(getAllDriveDetails());
 
+    }, 1000);
+
+    return () => {
+      clearInterval(timer)
+      clearInterval(secondOne)
+
+    };
+  }, []);
   const addCoin = async () => {
     try {
       await axios.post("/api/coins/add", {
@@ -91,6 +103,16 @@ export default function Home() {
     } catch (err) {
       console.error(err);
     }}
+  }
+
+  const getAllDriveDetails = async () => {
+    try {
+      const { data } = await axios.get(`/api/drive/all`);
+      console.log(data)
+      return data
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   return (
