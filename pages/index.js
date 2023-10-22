@@ -43,17 +43,17 @@ export default function Home() {
       </Div100vh>)}
 
       {myUser?.isDriver && <div>
-        <Div100vh style={{backgroundColor: "#000", display: "flex", flexDirection: "column", justifyContent: "space-between"}}>
+        <Div100vh style={{backgroundColor: "#000"}}>
           <p style={{color: "#fff", marginLeft: 16, marginRight: 16, paddingTop: 8, paddingBottom: 16, fontFamily: "Billy", fontSize: 24}}>good morning</p>
-          <div style={{display: "flex", justifyContent: "space-between", flexDirection: "column", gap: 16,padding: 16, backgroundColor: "#fff",  borderRadius: "24px 24px 0px 0px"}}>
-            <p style={{fontSize: 38, marginBottom: 32, marginLeft: 16, marginTop: 16, fontFamily: "Billy"}}>When are you departing?</p>
+          <div style={{display: "flex", justifyContent: "space-between", flexDirection: "column", gap: 16,padding: 16, height: "100%", backgroundColor: "#fff",  borderRadius: "24px 24px 0px 0px"}}>
+            <p style={{fontSize: 38, marginLeft: 16, marginTop: 16, fontFamily: "Billy"}}>When are you departing?</p>
             <TimePicker/>
-            <div>
-            <div style={{backgroundColor: "#000", marginTop: 32, marginBottom: 16, paddingTop: 16, borderRadius: 16, color: "#fff", justifyContent: "center", alignContent: "center", display: 'flex', paddingBottom: 16}}>
+            <div style={{marginBottom: 16,}}>
+            <div style={{backgroundColor: "#000", paddingTop: 16, borderRadius: 16, color: "#fff", justifyContent: "center", alignContent: "center", display: 'flex', paddingBottom: 16}}>
             <p style={{fontSize: 24, fontWeight: 500}}>Confirm Driving Time</p>
             </div>
             <div>
-            <div style={{backgroundColor: "#F2F2F2", paddingTop: 16, borderRadius: 16, color: "#000", justifyContent: "center", alignContent: "center", display: 'flex', paddingBottom: 16}}>
+            <div style={{backgroundColor: "#ECECEC", marginBottom: 32, marginTop: 16, paddingTop: 16, borderRadius: 16, color: "#000", justifyContent: "center", alignContent: "center", display: 'flex', paddingBottom: 16}}>
             <p style={{fontSize: 24, fontWeight: 500}}>I'm Not Driving In</p>
             </div>
             </div>
