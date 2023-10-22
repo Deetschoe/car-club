@@ -16,6 +16,7 @@ export default function Home() {
   const [driveId, setDriveId] = useState();
   const [drives, setDrives] = useState([]);
   const [selectedDrive, setSelectedDrive] = useState(null);
+  const [message, setMessage] = useState("good morning");
 
   const drivers = users.filter((user) => user.isDriver).map((user) => {
     const validDrive = drives?.find(drive => drive.driverId === user.id);
@@ -41,6 +42,7 @@ export default function Home() {
 
   const [character, setCharacter] = useState("");
   const myUser = users.find((user) => user.username === character);
+  const [myTokens, setMyTokens] = useState(0);
 
   const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
 
@@ -110,7 +112,7 @@ export default function Home() {
       await axios.post("/api/createTicket", {
         driveId: selectedDrive.driveId,
         username: character,
-      }).then((result) => console.log(result))
+      })
     } catch (err) {
       console.error(err);
     }
@@ -119,6 +121,32 @@ export default function Home() {
 
   const confirmDrivingTime = async () => {
     try {
+
+      function computeValue() {
+        let roundedHour = Math.round(time.getHours()); // Getting the current hour and rounding it
+        let randomInt = Math.floor(Math.random() * (10 - 7 + 1) + 7); // Getting a random integer between 7 and 10 (inclusive)
+        return ((24 - roundedHour) * (randomInt));
+    }
+        
+        let result = computeValue();
+        console.log(result);
+
+        try {
+          await axios.post("/api/coins/add", {
+            username: character,
+            amount: result,
+          });
+
+          setMyTokens(prevValue => prevValue + result)
+          setMessage(`WOAH +${result} TOKENS!`)
+          setTimeout(() => {
+            setMessage("Good Morning")
+        }, 3000);
+        } catch (err) {
+          console.error(err);
+        }
+        
+
       await axios.post("/api/drive/create", {
         username: character,
         time: time,
@@ -141,7 +169,7 @@ export default function Home() {
       const { data } = await axios.get(`/api/drive/${parseInt(specificID)}`);
       
       setDriveDeets(data);
-      console.log(data)
+      // console.log(data)
       setDepartureTime(data.departureTime)
 
     } catch (err) {
@@ -153,12 +181,12 @@ export default function Home() {
     try {
       const { data } = await axios.get(`/api/drive/all`);
       setDrives(data)
-      // console.log(data)
-      // console.log(data.some((drive) => drive.driver.username == character))
+      //console.log(data)
+      //console.log(data.some((drive) => drive.driver.username == character))
       data.map((drive) => {
-      console.log(drive.driver.username, character)
+      // console.log(drive.driver.username, character)
       if(drive.driver.username == character) {
-        console.log("already have ride")
+        // console.log("already have ride")
         setDriveId(drive.id)
         setDepartureTime(drive.departureTime)   
       }
@@ -169,6 +197,8 @@ export default function Home() {
       console.error(err);
     }
   }
+
+
 
   return (
     <>
@@ -222,8 +252,20 @@ export default function Home() {
                 }}
               >
                 {users.map((user) => (
-                  <div onClick={() => {
+                  <div onClick={async () => {
                     setCharacter(user.username)
+                    //Actually get tokens here TODO
+
+                    try {
+                      await axios.get(`/api/user/me?username=${user.username}`).then((result) => {
+                        console.log(result)
+                        setMyTokens(result.data.coins)
+                      })
+                    } catch (err) {
+                      console.error(err);
+                    }
+
+
                     getAllDriveDetails()
                   }} style={{ cursor: "pointer" }}>
                     <img
@@ -257,7 +299,7 @@ export default function Home() {
                   fontSize: 24,
                 }}
               >
-                good morning 
+                {message} {myTokens}
               </p>
               {departureTime == null ? (
                 <div
@@ -345,11 +387,11 @@ export default function Home() {
 
                 <img style={{width: 64, height: 64, borderRadius: 32}} src={users.find((user) => user.username == character).profilePhoto}/>
               <div style={{display: "flex", alignContent: "center", justifyContent: "center", marginLeft: 16, flexDirection: "column"}}>
-              <p style={{fontSize: 24, fontWeight: 500}} onClick={() => console.log(rider)}>
+              <p style={{fontSize: 24, fontWeight: 500}}>
                     {users.find((user) => user.username == character).username}
                   </p>
-                  <p style={{fontSize: 18, fontWeight: 500}} onClick={() => console.log(rider)}>
-                  {drives.find((drive) => drive.id == driveId).driver.coins} Tokens
+                  <p style={{fontSize: 18, fontWeight: 500}}>
+                  {drives?.find((drive) => drive?.id == driveId)?.driver?.coins} Tokens
                   </p>
               </div>
                </div>
@@ -357,16 +399,15 @@ export default function Home() {
               <div style={{display: "flex", alignContent: "center"}}>
                 <img style={{width: 64, height: 64, borderRadius: 32}} src={users.find((user) => user.id == rider.userId).profilePhoto}/>
               <div style={{display: "flex", alignContent: "center", justifyContent: "center", marginLeft: 16, flexDirection: "column"}}>
-              <p style={{fontSize: 24, fontWeight: 500}} onClick={() => console.log(rider)}>
+              <p style={{fontSize: 24, fontWeight: 500}}>
                     {users.find((user) => user.id == rider.userId).username}
                   </p>
-                  <p style={{fontSize: 18, fontWeight: 500}} onClick={() => console.log(rider)}>
+                  <p style={{fontSize: 18, fontWeight: 500}}>
                     {rider?.user?.coins} Tokens
                   </p>
               </div>
                </div>
                 ))}
-                  {!driveDeets?.hasLeft && <p>{driveId}</p>}
                 </div>
               )}
             </Div100vh>
@@ -389,7 +430,7 @@ export default function Home() {
                   fontSize: 24,
                 }}
               >
-                good morning
+                {message} {myTokens}
               </p>
               <Div100vh style={{  
                 borderRadius: "50", 
@@ -415,7 +456,7 @@ export default function Home() {
                   {drivers.map((driver) => {
                     return <div
                     onClick={() => {
-                      console.log(drives)
+                      // console.log(drives)
                       setSelectedDrive(driver)
                     
                     }}
