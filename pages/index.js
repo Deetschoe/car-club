@@ -55,14 +55,18 @@ export default function Home() {
     const diff = dayjs(departureTime).diff(dayjs(), "seconds");
 
     let hours;
+    let minutes;
+    let seconds;
 
     if (diff > 3600) {
       hours = Math.floor(diff / 3600);
+      minutes = Math.floor((diff % 3600) / 60);
+      seconds = Math.floor((diff % 3600) % 60);
     } else {
       hours = 0;
+      minutes = Math.floor(diff / 60);
+      seconds = Math.floor(diff % 60);
     }
-    const minutes = Math.floor(diff / 60);
-    const seconds = Math.floor(diff % 60);
 
     return {
       hours,
@@ -303,6 +307,7 @@ export default function Home() {
                     }}
                   >
                     {timeLeft.hours > 0 ? timeLeft.hours + ":" : ""}
+                    {timeLeft.minutes < 10 && "0"}
                     {timeLeft.minutes}:{timeLeft.seconds < 10 && "0"}
                     {timeLeft.seconds}
                   </p>
