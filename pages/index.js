@@ -34,7 +34,7 @@ export default function Home() {
       // To handle case of midnight
       hours = hours || 12;
       
-      const formattedTime = `${hours}:${minutes} ${period}`;
+      const formattedTime = `${hours}:${minutes}`;
       return {
         ...user,
         departureTime: formattedTime
@@ -339,44 +339,48 @@ export default function Home() {
                 >
                   Select Your Car Club
                   </p>
-                  <div
-                  style={{
-                    borderRadius: 32,
-                    backgroundColor: "black",
-                    display: "flex",
-                    alignContent: "center",
-                    marginLeft: 10,
-                    marginRight: 10,
-                    marginTop: 50,
-                    padding: "32px",
-                    flexDirection: "column",
-                    position: "relative",
-                  }}>
-                    <img
-                      style={{position: "absolute", right: 12, top: 12, width: 42, height:42, objectFit: "cover", borderRadius: 100 }}
-                      src="/profilePhoto/deet.jpg"/>
+                  {drivers.map((driver) => 
+                                    <div
+                                    style={{
+                                      borderRadius: 32,
+                                      backgroundColor: "black",
+                                      display: "flex",
+                                      alignContent: "center",
+                                      marginLeft: 10,
+                                      marginRight: 10,
+                                      marginTop: 24,
+                                      padding: "32px",
+                                      flexDirection: "column",
+                                      position: "relative",
+                                    }}>
+                                      <img
+                                        style={{position: "absolute", right: 12, top: 12, width: 42, height:42, objectFit: "cover", borderRadius: 100 }}
+                                        src={driver.profilePhoto}/>
+                  
+                                      <p style={{
+                                        fontSize: 20,
+                                        marginLeft: -6,
+                                        color: "#FFD500",
+                                        zIndex: 2,
+                                      }}>Departing @</p>
+                  
+                                      <b style={{
+                                          zIndex: 2,
+                                          color: "#FFD500",
+                                          fontSize: 72,
+                                          textShadow: "2px 2px 12 px rgba(12, 2, 2, 1)"
+                                      }}>{driver?.departureTime}</b>
+                  
+                                    <img
+                                        style={{position: "absolute", right: 12, bottom: 2, maxWidth: 175, objectFit: "cover"}}
+                                        src={driver.car}
+                                      />
+                  
+                                      
+                                    </div>
+                  )}
 
-                    <p style={{
-                      fontSize: 20,
-                      marginLeft: -6,
-                      color: "#FFD500",
-                      zIndex: 2,
-                    }}>Departing @</p>
 
-                    <b style={{
-                        zIndex: 2,
-                        color: "#FFD500",
-                        fontSize: 72,
-                        textShadow: "2px 2px 12 px rgba(12, 2, 2, 1)"
-                    }}>9:30</b>
-
-                  <img
-                      style={{position: "absolute", right: 12, top: 2, width: 180, height: 180, objectFit: "cover"}}
-                      src="/cars/deet.png"
-                    />
-
-                    
-                  </div>
               </Div100vh>
               </Div100vh>
         )}
