@@ -27,6 +27,7 @@ model Drive {
   departureTime DateTime
   driver        User     @relation(fields: [driverId], references: [id])
   driverId      Int
+  hasLeft       Boolean  @default(false)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
