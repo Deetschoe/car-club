@@ -184,6 +184,12 @@ export default function Home() {
             </Div100vh>
           </div>
         )}
+
+        {!myUser?.isDriver && (
+          <div>
+            <p>Dieter's view</p>
+          </div>
+        )}
       </main>
     </>
   );
