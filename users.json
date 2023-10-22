@@ -1,32 +1,40 @@
 [
 {
     "username": "Deet",
-   "profilePhoto": "profilePhoto/deet.jpg"
+   "profilePhoto": "profilePhoto/deet.jpg",
+   "isDriver": true
    
 },
 {
     "username": "Nila",
-   "profilePhoto": "profilePhoto/nila.jpg"
+   "profilePhoto": "profilePhoto/nila.jpg",
+   "isDriver": false
+
    
 },
 {
     "username": "Thomas",
-   "profilePhoto": "profilePhoto/thomas.jpg"
+   "profilePhoto": "profilePhoto/thomas.jpg",
+   "isDriver": true
    
 },
 {
     "username": "Fayd",
-   "profilePhoto": "profilePhoto/fayd.jpg"
+   "profilePhoto": "profilePhoto/fayd.jpg",
+   "isDriver": false
+
    
 },
 {
     "username": "Dev",
-   "profilePhoto": "profilePhoto/dev.jpg"
+   "profilePhoto": "profilePhoto/dev.jpg",
+   "isDriver": true
+
    
 },
 {
     "username": "JC",
-   "profilePhoto": "profilePhoto/jc.jpg"
-   
+   "profilePhoto": "profilePhoto/jc.jpg",
+   "isDriver": false
 }
 ]
