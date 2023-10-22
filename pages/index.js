@@ -57,9 +57,21 @@ export default function Home() {
 
   function calculateTimeLeft() {
     const diff = dayjs(departureTime).diff(dayjs(), "seconds");
-    const minutes = Math.floor(diff / 60);
-    const seconds = Math.floor(diff % 60);
-    
+
+    let hours;
+    let minutes;
+    let seconds;
+
+    if (diff > 3600) {
+      hours = Math.floor(diff / 3600);
+      minutes = Math.floor((diff % 3600) / 60);
+      seconds = Math.floor((diff % 3600) % 60);
+    } else {
+      hours = 0;
+      minutes = Math.floor(diff / 60);
+      seconds = Math.floor(diff % 60);
+    }
+
     return {
       minutes,
       seconds
@@ -240,74 +252,91 @@ export default function Home() {
               >
                 good morning 
               </p>
-              {departureTime == null ?
-              (<div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  flexDirection: "column",
-                  gap: 16,
-                  padding: 16,
-                  height: "100%",
-                  backgroundColor: "#fff",
-                  borderRadius: "24px 24px 0px 0px",
-                }}
-              >
-                <p style={{ fontSize: 38, marginLeft: 16, marginTop: 16, fontFamily: "Billy" }}>
-                  When are you departing?
-                </p>
-                <TimePicker onTimeChange={setTime} />
-                <div style={{ marginBottom: 16 }}>
-                  <div
-                    style={{
-                      backgroundColor: "#000",
-                      paddingTop: 16,
-                      borderRadius: 16,
-                      color: "#fff",
-                      justifyContent: "center",
-                      alignContent: "center",
-                      display: "flex",
-                      paddingBottom: 16,
-                    }}
-                  >
-                    <p onClick={confirmDrivingTime} style={{ fontSize: 24, fontWeight: 500 }}>Confirm Driving Time</p>
-                  </div>
-                  <div>
+              {departureTime == null ? (
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    flexDirection: "column",
+                    gap: 16,
+                    padding: 16,
+                    height: "100%",
+                    backgroundColor: "#fff",
+                    borderRadius: "24px 24px 0px 0px",
+                  }}
+                >
+                  <p style={{ fontSize: 38, marginLeft: 16, marginTop: 16, fontFamily: "Billy" }}>
+                    When are you departing?
+                  </p>
+                  <TimePicker onTimeChange={setTime} />
+                  <div style={{ marginBottom: 16 }}>
                     <div
                       style={{
-                        backgroundColor: "#ECECEC",
-                        marginBottom: 32,
-                        marginTop: 16,
+                        backgroundColor: "#000",
                         paddingTop: 16,
                         borderRadius: 16,
-                        color: "#000",
+                        color: "#fff",
                         justifyContent: "center",
                         alignContent: "center",
                         display: "flex",
                         paddingBottom: 16,
                       }}
                     >
-                      <p style={{ fontSize: 24, fontWeight: 500 }}>I'm Not Driving In</p>
+                      <p onClick={confirmDrivingTime} style={{ fontSize: 24, fontWeight: 500 }}>
+                        Confirm Driving Time
+                      </p>
+                    </div>
+                    <div>
+                      <div
+                        style={{
+                          backgroundColor: "#ECECEC",
+                          marginBottom: 32,
+                          marginTop: 16,
+                          paddingTop: 16,
+                          borderRadius: 16,
+                          color: "#000",
+                          justifyContent: "center",
+                          alignContent: "center",
+                          display: "flex",
+                          paddingBottom: 16,
+                        }}
+                      >
+                        <p style={{ fontSize: 24, fontWeight: 500 }}>I'm Not Driving In</p>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>) : (
-              <div               
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: 16,
-                padding: 16,
-                height: "100%",
-                backgroundColor: "#fff",
-                borderRadius: "24px 24px 0px 0px",
-              }}>
-                <p style={{color: "#000", fontSize: 96, width: "100%", textAlign: "center", fontWeight: 600}}>{timeLeft.minutes}:{timeLeft.seconds < 10 && ("0")}{timeLeft.seconds}</p>
-                <div style={{width: "100%", height: "2px", backgroundColor: "#000"}}></div>
-                <p>Crew: {driveId}</p>
-                {!driveDeets?.hasLeft && (<p>{driveId}</p>)}
-              </div>)}
-              
+              ) : (
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 16,
+                    padding: 16,
+                    height: "100%",
+                    backgroundColor: "#fff",
+                    borderRadius: "24px 24px 0px 0px",
+                  }}
+                >
+                  <p
+                    style={{
+                      color: "#000",
+                      fontSize: 96,
+                      width: "100%",
+                      textAlign: "center",
+                      fontWeight: 600,
+                    }}
+                  >
+                    {timeLeft.hours > 0 ? timeLeft.hours + ":" : ""}
+                    {timeLeft.minutes < 10 && "0"}
+                    {timeLeft.minutes}:{timeLeft.seconds < 10 && "0"}
+                    {timeLeft.seconds}
+                  </p>
+                  <div style={{ width: "100%", height: "2px", backgroundColor: "#000" }}></div>
+                  <p>Crew: {driveId}</p>
+                  {!driveDeets?.hasLeft && <p>{driveId}</p>}
+                </div>
+              )}
             </Div100vh>
           </div>
         )}
