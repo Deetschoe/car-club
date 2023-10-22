@@ -10,14 +10,28 @@ import TimePicker from "../components/TimePicker";
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
+  const [time, setTime] = useState('');
+
   const [character, setCharacter] = useState("");
   const myUser = users.find((user) => user.username === character);
 
   const addCoin = async () => {
     try {
       await axios.post("/api/coins/add", {
-        username: "Dev",
+        username: character,
         amount: 10,
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+
+  const confirmDrivingTime = async () => {
+    try {
+      await axios.post("/api/drive/create", {
+        username: character,
+        time: time,
       });
     } catch (err) {
       console.error(err);
@@ -35,7 +49,6 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main style={{ fontFamily: "system-ui, Helvetica" }}>
-        <button onClick={addCoin}>Add</button>
         {character == "" && (
           <Div100vh
             style={{
@@ -126,7 +139,7 @@ export default function Home() {
                 <p style={{ fontSize: 38, marginLeft: 16, marginTop: 16, fontFamily: "Billy" }}>
                   When are you departing?
                 </p>
-                <TimePicker />
+                <TimePicker onTimeChange={setTime} />
                 <div style={{ marginBottom: 16 }}>
                   <div
                     style={{
