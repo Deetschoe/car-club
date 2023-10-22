@@ -1,3 +1,8 @@
+@font-face {
+  font-family: 'Billy';
+  src: url('/fonts/Billy-Bold.otf') format('opentype');
+  /* You can also specify other font properties here */
+}
 
 
 * {
