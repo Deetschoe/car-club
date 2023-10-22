@@ -1,0 +1,22 @@
+{
+    "theme_color": "#D7604B",
+    "background_color": "#000",
+    "display": "standalone",
+    "scope": "/",
+    "start_url": "/",
+    "name": "Car Club",
+    "short_name": "Car Club",
+    "description": "Car Clubbing for Friends",
+    "icons": [
+        {
+          "src": "/android-chrome-192x192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        },
+        {
+          "src": "/android-chrome-512x512.png",
+          "sizes": "512x512",
+          "type": "image/png"
+        }
+      ]
+}
