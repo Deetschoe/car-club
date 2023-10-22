@@ -348,13 +348,34 @@ export default function Home() {
                     marginLeft: 10,
                     marginRight: 10,
                     marginTop: 50,
-                    padding: "42px"
+                    padding: "32px",
+                    flexDirection: "column",
+                    position: "relative",
                   }}>
+                    <img
+                      style={{position: "absolute", right: 12, top: 12, width: 42, height:42, objectFit: "cover", borderRadius: 100 }}
+                      src="/profilePhoto/deet.jpg"/>
+
                     <p style={{
-                      fontSize: 24,
-                      color: "white",
-                    }}>Departing</p>
-                    <p style={{color: "yellow"}}>yes yes</p>
+                      fontSize: 20,
+                      marginLeft: -6,
+                      color: "#FFD500",
+                      zIndex: 2,
+                    }}>Departing @</p>
+
+                    <b style={{
+                        zIndex: 2,
+                        color: "#FFD500",
+                        fontSize: 72,
+                        textShadow: "2px 2px 12 px rgba(12, 2, 2, 1)"
+                    }}>9:30</b>
+
+                  <img
+                      style={{position: "absolute", right: 12, top: 2, width: 180, height: 180, objectFit: "cover"}}
+                      src="/cars/deet.png"
+                    />
+
+                    
                   </div>
               </Div100vh>
               </Div100vh>
