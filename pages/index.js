@@ -296,6 +296,7 @@ export default function Home() {
                 borderRadius: 21,   
                 display: "flex",
                 borderRadius: "24px 24px 0px 0px",
+                flexDirection: "column",
               }}>
                 <p style=
                 {{        
@@ -304,25 +305,29 @@ export default function Home() {
                 paddingTop: 30, 
                 justifyContent: "left",
                 marginLeft: 16, 
-                color: "#000"
+                color: "#000",
                 }}>
                   Select Your Car Club
                   </p>
-                  <div>
-                    <p></p>
+                  <div
+                  style={{
+                    borderRadius: 32,
+                    backgroundColor: "black",
+                    display: "flex",
+                    alignContent: "center",
+                    marginLeft: 10,
+                    marginRight: 10,
+                    marginTop: 50,
+                    padding: "42px"
+                  }}>
+                    <p style={{
+                      fontSize: 24,
+                      color: "white",
+                    }}>Departing</p>
+                    <p style={{color: "yellow"}}>yes yes</p>
                   </div>
               </Div100vh>
               </Div100vh>
-
-// display: "flex",
-// justifyContent: "space-between",
-// flexDirection: "column",
-// gap: 16,
-// padding: 16,
-// height: "100%",
-// backgroundColor: "#fff",
-// borderRadius: "24px 24px 0px 0px",
-
         )}
       </main>
     </>
