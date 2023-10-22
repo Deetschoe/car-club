@@ -15,29 +15,30 @@ export default function Home() {
   const [departureTime, setDepartureTime] = useState(null);
   const [driveId, setDriveId] = useState();
   const [drives, setDrives] = useState([]);
+  const [selectedDrive, setSelectedDrive] = useState(null);
 
   const drivers = users.filter((user) => user.isDriver).map((user) => {
-  
     const validDrive = drives?.find(drive => drive.driverId === user.id);
   
     // console.log(validDrive)
     if(validDrive) {
-      const date = new Date(validDrive.departureTime);
+      const date = dayjs(validDrive.departureTime);
 
 
-      let hours = date.getUTCHours();
-      const minutes = date.getUTCMinutes().toString().padStart(2, '0');
-      const period = hours >= 12 ? 'PM' : 'AM';
+      // let hours = date.getUTCHours();
+      // const minutes = date.getUTCMinutes().toString().padStart(2, '0');
+      // const period = hours >= 12 ? 'PM' : 'AM';
       
-      // Convert to 12-hour format
-      hours = hours % 12;
-      // To handle case of midnight
-      hours = hours || 12;
+      // // Convert to 12-hour format
+      // hours = hours % 12;
+      // // To handle case of midnight
+      // hours = hours || 12;
       
-      const formattedTime = `${hours}:${minutes}`;
+      const formattedTime = date.format("HH:mm")
       return {
         ...user,
-        departureTime: formattedTime
+        departureTime: formattedTime,
+        driveId: validDrive.id
       };
     
     }
@@ -97,6 +98,17 @@ export default function Home() {
         username: character,
         amount: 10,
       });
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const getTicket = async () => {
+    try {
+      await axios.post("/api/createTicket", {
+        driveId: selectedDrive.driveId,
+        username: character,
+      }).then((result) => console.log(result))
     } catch (err) {
       console.error(err);
     }
@@ -339,48 +351,56 @@ export default function Home() {
                 >
                   Select Your Car Club
                   </p>
-                  {drivers.map((driver) => 
-                                    <div
-                                    style={{
-                                      borderRadius: 32,
-                                      backgroundColor: "black",
-                                      display: "flex",
-                                      alignContent: "center",
-                                      marginLeft: 10,
-                                      marginRight: 10,
-                                      marginTop: 24,
-                                      padding: "32px",
-                                      flexDirection: "column",
-                                      position: "relative",
-                                    }}>
-                                      <img
-                                        style={{position: "absolute", right: 12, top: 12, width: 42, height:42, objectFit: "cover", borderRadius: 100 }}
-                                        src={driver.profilePhoto}/>
-                  
-                                      <p style={{
-                                        fontSize: 20,
-                                        marginLeft: -6,
-                                        color: "#FFD500",
-                                        zIndex: 2,
-                                      }}>Departing @</p>
-                  
-                                      <b style={{
-                                          zIndex: 2,
-                                          color: "#FFD500",
-                                          fontSize: 72,
-                                          textShadow: "2px 2px 12 px rgba(12, 2, 2, 1)"
-                                      }}>{driver?.departureTime ? dayjs(driver?.departureTime).format("HH:mm") : "--:--"}</b>
-                  
-                                    <img
-                                        style={{position: "absolute", right: 12, bottom: 2, maxWidth: 175, objectFit: "cover"}}
-                                        src={driver.car}
-                                      />
-                  
-                                      
-                                    </div>
+                  {drivers.map((driver) => {
+                    return <div
+                    onClick={() => {
+                      console.log(drives)
+                      setSelectedDrive(driver)
+                    
+                    }}
+
+                    style={{
+                      borderRadius: 32,
+                      backgroundColor: "black",
+                      display: "flex",
+                      alignContent: "center",
+                      marginLeft: 10,
+                      marginRight: 10,
+                      marginTop: 24,
+                      padding: "32px",
+                      flexDirection: "column",
+                      position: "relative",
+                    }}>
+                      <img
+                        style={{position: "absolute", right: 12, top: 12, width: 42, height:42, objectFit: "cover", borderRadius: 100 }}
+                        src={driver.profilePhoto}/>
+  
+                      <p style={{
+                        fontSize: 20,
+                        marginLeft: -6,
+                        color: "#FFD500",
+                        zIndex: 2,
+                      }}>Departing @</p>
+  
+                      <b style={{
+                          zIndex: 2,
+                          color: "#FFD500",
+                          fontSize: 72,
+                          textShadow: "2px 2px 12 px rgba(12, 2, 2, 1)"
+                      }}>{driver?.departureTime}</b>
+  
+                    <img
+                        style={{position: "absolute", right: 12, bottom: 2, maxWidth: 175, objectFit: "cover"}}
+                        src={driver.car}
+                      />
+  
+                      
+                    </div>
+                  }
                   )}
-
-
+                  {selectedDrive != null &&
+                  <button onClick={getTicket} style={{marginTop: 16, marginLeft: 16, marginRight: 16, padding: 16}}>Claim Ticket {selectedDrive.driveId}</button>
+                  }
               </Div100vh>
               </Div100vh>
         )}
