@@ -1,5 +1,162 @@
+[
 {
     "name": "BasicBird",
     "tier": "Common",
     "image": "/cards/common/BasicBird.jpg"
+},
+{
+    "name": "Modemgoose",
+    "tier": "Common",
+    "image": "/cards/common/Modemgoose.jpg"
+},
+{
+    "name": "GrayGoo",
+    "tier": "Common",
+    "image": "/cards/common/GrayGoo.jpg"
+},
+{
+    "name": "PlainPanda",
+    "tier": "Common",
+    "image": "/cards/common/PlainPanda.jpg"
+},
+{
+    "name": "RegularRabbit",
+    "tier": "Common",
+    "image": "/cards/common/RegularRabbit.jpg"
+},
+{
+    "name": "BasicButterfly",
+    "tier": "Common",
+    "image": "/cards/common/BasicButterfly.jpg"
+},
+{
+    "name": "PlainPenguin",
+    "tier": "Common",
+    "image": "/cards/common/PlainPenguin.jpg"
+},
+{
+    "name": "RegularRooster",
+    "tier": "Common",
+    "image": "/cards/common/RegularRooster.jpg"
+},
+{
+    "name": "TypicalTortoise",
+    "tier": "Common",
+    "image": "/cards/common/TypicalTortoise.jpg"
+},
+{
+    "name": "NormNewt",
+    "tier": "Common",
+    "image": "/cards/common/NormNewt.jpg"
+},
+{
+    "name": "MehMoth",
+    "tier": "Common",
+    "image": "/cards/common/MehMoth.jpg"
+},
+{
+    "name": "Bugbeast",
+    "tier": "Uncommon",
+    "image": "/cards/uncommon/Bugbeast.jpg"
+},
+{
+    "name": "Codechar",
+    "tier": "Uncommon",
+    "image": "/cards/uncommon/Codechar.jpg"
+},
+{
+    "name": "Keycat",
+    "tier": "Uncommon",
+    "image": "/cards/uncommon/Keycat.jpg"
+},
+{
+    "name": "CodecCoyote",
+    "tier": "Uncommon",
+    "image": "/cards/uncommon/CodecCotyote.jpg"
+},
+{
+    "name": "TechToucan",
+    "tier": "Uncommon",
+    "image": "/cards/uncommon/TechToucan.jpg"
+},
+{
+    "name": "CircuitCobra",
+    "tier": "Uncommon",
+    "image": "/cards/uncommon/CircuitCobra.jpg"
+},
+{
+    "name": "Ramram",
+    "tier": "Uncommon",
+    "image": "/cards/uncommon/Ramram.jpg"
+},
+{
+    "name": "Wifowl",
+    "tier": "Uncommon",
+    "image": "/cards/uncommon/Wifowl.jpg"
+},
+{
+    "name": "ArrayAntelope",
+    "tier": "Rare",
+    "image": "/cards/uncommon/ArrayAntelope.jpg"
+},
+{
+    "name": "CacheCheeta",
+    "tier": "Rare",
+    "image": "/cards/uncommon/CacheCheeta.jpg"
+},
+{
+    "name": "Linklynx",
+    "tier": "Rare",
+    "image": "/cards/uncommon/Linklynx.jpg"
+},
+{
+    "name": "NodeNarwhal",
+    "tier": "Rare",
+    "image": "/cards/uncommon/NodeNarwhal.jpg"
+},
+{
+    "name": "Plugpu",
+    "tier": "Rare",
+    "image": "/cards/uncommon/Plugpu.jpg"
+},
+{
+    "name": "StreamStork",
+    "tier": "Rare",
+    "image": "/cards/uncommon/StreamStork.jpg"
+},
+{
+    "name": "DriveDrake",
+    "tier": "Ultra Rare",
+    "image": "/cards/uncommon/DriveDrake.jpg"
+},
+{
+    "name": "LavenderLynx",
+    "tier": "Ultra Rare",
+    "image": "/cards/uncommon/LavendarLynx.jpg"
+},
+{
+    "name": "NetNimbus",
+    "tier": "Ultra Rare",
+    "image": "/cards/uncommon/NetNimbus.jpg"
+},
+{
+    "name": "Pixiemo",
+    "tier": "Ultra Rare",
+    "image": "/cards/uncommon/Pixiemo.jpg"
+},
+{
+    "name": "Battbat",
+    "tier": "Legendary",
+    "image": "/cards/uncommon/Battbat.jpg"
+},
+{
+    "name": "EtherEagle",
+    "tier": "Legendary",
+    "image": "/cards/uncommon/EtherEagle.jpg"
+},
+{
+    "name": "Netnavi",
+    "tier": "Legendary",
+    "image": "/cards/uncommon/Netnavi.jpg"
 }
+]
