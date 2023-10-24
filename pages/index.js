@@ -18,7 +18,10 @@ export default function Home() {
   const [selectedDrive, setSelectedDrive] = useState(null);
   const [message, setMessage] = useState("good morning");
   const [hasLeft, setHasLeft] = useState(false);
-  const [hasUnopenedChest, setHasUnopenedChest] = useState(false);
+  const [hasUnopenedChest, setHasUnopenedChest] = useState(true);
+  const [newCard, setnewCard] = useState("/cards/common/BasicBird.jpg");
+
+
   const [chestOpen, setChestOpen] = useState(false);
   const [cardSlideIn, setCardSlideIn] = useState(false);
   const [selectedCard, setSelectedCard] = useState(null);
@@ -400,7 +403,7 @@ export default function Home() {
                 transition: "all 0.3s ease-in-out",
                 borderRadius: 16,
                 display: 'inline-block', // This is important for transform to work properly
-            }} src={!cardFlipped ? ("/cards/back.png") : ("/cards/common/BasicBird.jpg")}
+            }} src={!cardFlipped ? ("/cards/back.png") : (newCard)}
             />
             </div>
 
@@ -425,7 +428,7 @@ export default function Home() {
               width: selectedCard == 2 ? ("calc(100vw - 32px)") : selectedCard != null && selectedCard != 2 ? ("0px") : ("120px"),
               animation: `shake 0.75s cubic-bezier(0.36, 0.07, 0.19, 0.97) infinite`,
               display: 'inline-block', // This is important for transform to work properly
-            }} src={!cardFlipped ? ("/cards/back.png") : ("/cards/common/BasicBird.jpg")}/>
+            }} src={!cardFlipped ? ("/cards/back.png") : (newCard)}/>
             </div>
 
             <div 
@@ -453,7 +456,7 @@ export default function Home() {
     width: selectedCard == 1 ? ("calc(100vw - 32px)") : selectedCard != null && selectedCard != 1 ? ("0px") : ("120px"),
     animation: `shake 0.75s cubic-bezier(0.36, 0.07, 0.19, 0.97) infinite`,
     display: 'inline-block', // This is important for transform to work properly
-  }} src={!cardFlipped ? ("/cards/back.png") : ("/cards/common/BasicBird.jpg")} />
+  }} src={!cardFlipped ? ("/cards/back.png") : (newCard)} />
 </div>
 
           </>
@@ -679,9 +682,10 @@ export default function Home() {
                   {drivers.map((driver) => {
                     return <div
                     onClick={() => {
-                      // console.log(drives)
+                      console.log(driver)
+                      if(driver.departureTime != "--:--") {
                       setSelectedDrive(driver)
-                    
+                      }
                     }}
 
                     style={{
