@@ -22,6 +22,7 @@ export default function Home() {
   const [chestOpen, setChestOpen] = useState(false);
   const [cardSlideIn, setCardSlideIn] = useState(false);
   const [selectedCard, setSelectedCard] = useState(null);
+  const [cardFlipped, setCardFlipped] = useState(false);
 
   const drivers = users.filter((user) => user.isDriver).map((user) => {
     const validDrive = drives?.find(drive => drive.driverId === user.id);
@@ -357,7 +358,7 @@ export default function Home() {
             <div />
           </Div100vh>
         )}
-        {character != "" && !hasUnopenedChest && (
+        {character != "" && hasUnopenedChest && (
           <Div100vh style={{backgroundColor: "#000", display: "flex", flexDirection: "column", justifyContent: "space-between", width: "100%", zIndex: 5}}>
             {!chestOpen && 
             (
@@ -375,9 +376,21 @@ export default function Home() {
             )}
             {chestOpen && (
             <>
-            <p style={{color: "#fff", fontFamily: "Billy", fontSize: 28, paddingTop: 16, marginLeft: 16, marginRight: 16}}>Select Your Card {selectedCard}</p>
+            <p style={{color: "#fff", fontFamily: "Billy", fontSize: 28, paddingTop: 16, marginLeft: 16, marginRight: 16}}>Select Your Card</p>
             <div 
-            onClick={() => setSelectedCard(0)}
+            onClick={() => {
+              setSelectedCard(0)
+              setTimeout(function() {
+                setCardFlipped(true)
+              }, 350);
+              setTimeout(function() {
+                setHasUnopenedChest(false)
+                setChestOpen(false)
+                setCardSlideIn(false)
+                setCardFlipped(false)
+              }, 5000);
+              
+            }}
             style={{position: "absolute", justifyContent: "center", display: "flex", alignItems: "center", backgroundColor: "#fff",
             width: selectedCard == 0 ? ("calc(100vw - 32px)") : selectedCard != null && selectedCard != 0 ? ("0px") : ("100px"),
             borderRadius: 16, transition: "all 0.3s ease-in-out", bottom: selectedCard == 0 ? (128) : !cardSlideIn ? ("calc(50% + 144px)") : ("calc(50% - 128px)"), left: 16}}>
@@ -385,14 +398,21 @@ export default function Home() {
               width: selectedCard == 0 ? ("calc(100vw - 32px)") : selectedCard != null && selectedCard != 0 ? ("0px") : ("120px"),
                 animation: `shake 0.75s cubic-bezier(0.36, 0.07, 0.19, 0.97) infinite`,
                 transition: "all 0.3s ease-in-out",
+                borderRadius: 16,
                 display: 'inline-block', // This is important for transform to work properly
-            }} src="/cards/back.png"
+            }} src={!cardFlipped ? ("/cards/back.png") : ("/cards/common/BasicBird.jpg")}
             />
             </div>
 
             
             <div
-                        onClick={() => setSelectedCard(2)}
+                        onClick={() => {
+                          setSelectedCard(2)
+                          setTimeout(function() {
+                            setCardFlipped(true)
+                          }, 350);
+                        }
+                        }
 
             style={{position: "absolute", justifyContent: "center", display: "flex", alignItems: "center", backgroundColor: "#fff", width: 100, borderRadius: 16, transition: "all 0.3s ease-in-out", bottom: selectedCard == 2 ? (128) : !cardSlideIn ? ("calc(50% - 400px)") : ("calc(50% - 128px)"), right: selectedCard != 2 ? (16) : ("calc(50vw - 48px)")}}>
             <img 
@@ -400,15 +420,20 @@ export default function Home() {
             
             style={{
               transition: "all 0.3s ease-in-out",
+              borderRadius: 16,
 
               width: selectedCard == 2 ? ("calc(100vw - 32px)") : selectedCard != null && selectedCard != 2 ? ("0px") : ("120px"),
               animation: `shake 0.75s cubic-bezier(0.36, 0.07, 0.19, 0.97) infinite`,
               display: 'inline-block', // This is important for transform to work properly
-            }} src="/cards/back.png"/>
+            }} src={!cardFlipped ? ("/cards/back.png") : ("/cards/common/BasicBird.jpg")}/>
             </div>
 
             <div 
-                        onClick={() => setSelectedCard(1)}
+                        onClick={() => {setSelectedCard(1)
+                          setTimeout(function() {
+                            setCardFlipped(true)
+                          }, 350);
+                        }}
 
             style={{
   position: "absolute",
@@ -424,10 +449,11 @@ export default function Home() {
 }}>
   <img style={{
     transition: "all 0.3s ease-in-out",
+    borderRadius: 16,
     width: selectedCard == 1 ? ("calc(100vw - 32px)") : selectedCard != null && selectedCard != 1 ? ("0px") : ("120px"),
     animation: `shake 0.75s cubic-bezier(0.36, 0.07, 0.19, 0.97) infinite`,
     display: 'inline-block', // This is important for transform to work properly
-  }} src="/cards/back.png" />
+  }} src={!cardFlipped ? ("/cards/back.png") : ("/cards/common/BasicBird.jpg")} />
 </div>
 
           </>
@@ -698,7 +724,32 @@ export default function Home() {
                   }
                   )}
                   {selectedDrive != null &&
-                  <button onClick={getTicket} style={{marginTop: 16, padding: 16, marginLeft: 16, marginRight: 16, padding: 16}}>Claim Ticket {selectedDrive.driveId}</button>
+                  <Div100vh onClick={() => setSelectedDrive(null)} style={{position: "absolute", zIndex: 2, backgroundColor: "rgba(0, 0, 0, 0.5)", bottom: 0, width: "100%"}}>
+
+                  <div style={{width: "100%", zIndex: 2, position: "absolute", bottom: 0, backgroundColor: "#fff", paddingTop: 16, paddingBottom: 16}}>
+                    <p style={{fontFamily: "Billy", fontSize: 30, width: "100%", textAlign: "center"}}>Claim Your Ticket</p>
+                    <img src="https://cloud-nkyuzur5k-hack-club-bot.vercel.app/0ticket.png" style={{width:"calc(100vw - 32px)", marginLeft: 16, marginTop: 24}}/>
+                    <div
+                    onClick={getTicket}
+                    style={{
+                      backgroundColor: "#FFD500",
+                      paddingTop: 16,
+                      borderRadius: 16,
+                      width: "calc(100% - 32px)", marginLeft: 16,
+                      marginTop: 16, marginBottom: 24,
+                      color: "#000",
+                      justifyContent: "center",
+                      alignContent: "center",
+                      display: "flex",
+                      paddingBottom: 16,
+                    }}
+                  >
+                    <p style={{ fontSize: 24, fontWeight: 500 }}>
+                      Confirm Driving Time
+                    </p>
+                  </div>
+                                    </div>
+                  </Div100vh>
                   }
               </Div100vh>
               </Div100vh>
