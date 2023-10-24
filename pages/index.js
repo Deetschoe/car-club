@@ -18,10 +18,8 @@ export default function Home() {
   const [selectedDrive, setSelectedDrive] = useState(null);
   const [message, setMessage] = useState("good morning");
   const [hasLeft, setHasLeft] = useState(false);
-  const [hasUnopenedChest, setHasUnopenedChest] = useState(true);
-  const [newCard, setnewCard] = useState("/cards/common/BasicBird.jpg");
-
-
+  const [hasUnopenedChest, setHasUnopenedChest] = useState(false);
+  const [newCard, setNewCards] = useState("/cards/common/BasicBird.jpg");
   const [chestOpen, setChestOpen] = useState(false);
   const [cardSlideIn, setCardSlideIn] = useState(false);
   const [selectedCard, setSelectedCard] = useState(null);
@@ -125,8 +123,7 @@ export default function Home() {
 
       setDriveDeets(drives.find((drive) => drive.id == selectedDrive.driveId))
       setDepartureTime(drives.find((drive) => drive.id == selectedDrive.driveId).departureTime)
-      console.log(drives.find((drive) => drive.id == selectedDrive.driveId))
-      
+ 
       
       const hoursSelectedDrive = parseInt(selectedDrive.departureTime.split(":")[0], 10);
       function computeValue() {
@@ -178,7 +175,6 @@ export default function Home() {
     }
         
         let result = computeValue();
-        console.log(result);
 
         try {
           await axios.post("/api/coins/add", {
@@ -254,11 +250,9 @@ export default function Home() {
         setDriveId(drive.id)
         setDepartureTime(drive.departureTime)   
       }
-      console.log(drive.riders)
       if(drive.riders.some((rider) => rider.user.username == character)) {
         console.log("auto select")
         // console.log("already have ride")
-        console.log(drive.id)
         setDriveDeets(drives.find((driveMap) => driveMap.id == drive.id))
 
         setDriveId(drive.id)
@@ -335,7 +329,13 @@ export default function Home() {
 
                     try {
                       await axios.get(`/api/user/me?username=${user.username}`).then((result) => {
-                        console.log(result)
+                        console.log(result.data.cards)
+                        if(result.data.cards.some((card) => !card.isOpened)) {
+                          setHasUnopenedChest(true)
+                          console.log("new below")
+                          setNewCards(result.data.cards.find((card) => !card.isOpened).cardName)
+                        
+                        }
                         setMyTokens(result.data.coins)
                       })
                     } catch (err) {
@@ -383,14 +383,20 @@ export default function Home() {
             <div 
             onClick={() => {
               setSelectedCard(0)
-              setTimeout(function() {
+              setTimeout(async function() {
                 setCardFlipped(true)
+                //Mark this card as isOpen
+                
+                
+
               }, 350);
               setTimeout(function() {
                 setHasUnopenedChest(false)
                 setChestOpen(false)
                 setCardSlideIn(false)
                 setCardFlipped(false)
+
+
               }, 5000);
               
             }}
@@ -403,7 +409,7 @@ export default function Home() {
                 transition: "all 0.3s ease-in-out",
                 borderRadius: 16,
                 display: 'inline-block', // This is important for transform to work properly
-            }} src={!cardFlipped ? ("/cards/back.png") : (newCard)}
+            }} src={(!cardFlipped || selectedCard != 0) ? ("/cards/back.png") : (`/cards/${newCard}.jpg`)}
             />
             </div>
 
@@ -428,7 +434,7 @@ export default function Home() {
               width: selectedCard == 2 ? ("calc(100vw - 32px)") : selectedCard != null && selectedCard != 2 ? ("0px") : ("120px"),
               animation: `shake 0.75s cubic-bezier(0.36, 0.07, 0.19, 0.97) infinite`,
               display: 'inline-block', // This is important for transform to work properly
-            }} src={!cardFlipped ? ("/cards/back.png") : (newCard)}/>
+            }} src={(!cardFlipped || selectedCard != 2)? ("/cards/back.png") : (`/cards/${newCard}`)}/>
             </div>
 
             <div 
@@ -456,7 +462,7 @@ export default function Home() {
     width: selectedCard == 1 ? ("calc(100vw - 32px)") : selectedCard != null && selectedCard != 1 ? ("0px") : ("120px"),
     animation: `shake 0.75s cubic-bezier(0.36, 0.07, 0.19, 0.97) infinite`,
     display: 'inline-block', // This is important for transform to work properly
-  }} src={!cardFlipped ? ("/cards/back.png") : (newCard)} />
+  }} src={(!cardFlipped || selectedCard != 1) ? ("/cards/back.png") : (`/cards/${newCard}`)} />
 </div>
 
           </>
@@ -682,7 +688,6 @@ export default function Home() {
                   {drivers.map((driver) => {
                     return <div
                     onClick={() => {
-                      console.log(driver)
                       if(driver.departureTime != "--:--") {
                       setSelectedDrive(driver)
                       }
