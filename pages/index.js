@@ -17,9 +17,13 @@ export default function Home() {
   const [drives, setDrives] = useState([]);
   const [selectedDrive, setSelectedDrive] = useState(null);
 
+  const [showChest, setShowChest] = useState(false);
+  const [showCards, setShowCards] = useState(false);
+  const [selectedCard, setSelectedCard] = useState(null);
+
   const drivers = users.filter((user) => user.isDriver).map((user) => {
     const validDrive = drives?.find(drive => drive.driverId === user.id);
-  
+
     // console.log(validDrive)
     if(validDrive) {
       const date = dayjs(validDrive.departureTime);
@@ -165,6 +169,14 @@ export default function Home() {
       console.error(err);
     }
   }
+
+
+  useEffect(() => {
+    if (selectedCard) {
+      alert(`You selected Card ${selectedCard}`);
+    }
+  }, [selectedCard]);
+
 
   return (
     <>
@@ -434,6 +446,10 @@ export default function Home() {
               </Div100vh>
 
         )}
+
+        
+
+        
       </main>
     </>
   );
