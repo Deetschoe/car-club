@@ -79,7 +79,7 @@ export default function Home() {
                 }}
               >
                 <img
-                  style={{ width: 96, height: 96, objectFit: "cover", borderRadius: 8 }}
+                  style={{ width: 96, height: 96, objectFit: "cover", borderRadius: 100 }}
                   src={details.profilePhoto}
                 />
                 <div>
@@ -105,19 +105,20 @@ export default function Home() {
               </p>
               <div
                 style={{
-                  display: "grid",
-                  marginTop: 25,
-                  marginLeft: 25,
-                  marginRight: 25,
-                  gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
-                  gap: 8,
-                  paddingBottom: "75px",
+                  display: "flex",
+                  justifyContent: "space-around",
+                  gap: 16, marginLeft: 16, marginRight: 16
                 }}
               >
+                
                 {user?.cards.map((card) => (
-                  <div style={{ height: 100, backgroundColor: "#fcfcf4", borderRadius: 8 }}>
-                    {card.cardName}
-                  </div>
+
+
+                <img
+                  style={{ display: "flex", imageFit: "cover", overflow: "hidden", aspectRatio: 3/4, objectFit: "cover", border: "1px solid #000", objectFit: "cover", borderRadius: 15 }}
+                   src={`/cards/${card.cardName}.jpg`} >
+                  </img>
+
                 ))}
               </div>
             </Div100vh>

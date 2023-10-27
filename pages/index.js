@@ -32,7 +32,7 @@ function Home() {
 
   const drivers = users.filter((user) => user.isDriver).map((user) => {
     const validDrive = drives?.find(drive => drive.driverId === user.id);
-  
+
     if(validDrive) {
       const date = dayjs(validDrive.departureTime);
 
@@ -274,6 +274,14 @@ function Home() {
     }
   }
 
+
+
+
+  useEffect(() => {
+    if (selectedCard) {
+      alert(`You selected Card ${selectedCard}`);
+    }
+  }, [selectedCard]);
 
 
   return (
@@ -784,6 +792,7 @@ function Home() {
               <Tabbar />
 
               </Div100vh>
+
         )}
         {departureTime != null && character != "" && !myUser?.isDriver && (
           <div>
