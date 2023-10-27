@@ -1,4 +1,5 @@
 import Head from "next/head";
+import dynamic from "next/dynamic";
 import Image from "next/image";
 import { Inter } from "next/font/google";
 import styles from "@/styles/Home.module.css";
@@ -9,8 +10,10 @@ import TimePicker from "../components/TimePicker";
 import axios from "axios"
 const inter = Inter({ subsets: ["latin"] });
 import dayjs from 'dayjs';
+import Tabbar from "@/components/Tabbar";
+import { useLocalStorage } from "@uidotdev/usehooks";
 
-export default function Home() {
+function Home() {
   const [time, setTime] = useState(null);
   const [departureTime, setDepartureTime] = useState(null);
   const [driveId, setDriveId] = useState();
@@ -20,6 +23,8 @@ export default function Home() {
   const [hasLeft, setHasLeft] = useState(false);
   const [hasUnopenedChest, setHasUnopenedChest] = useState(false);
   const [newCard, setNewCards] = useState("/cards/common/BasicBird.jpg");
+  const [newCardID, setNewCardID] = useState("/cards/common/BasicBird.jpg");
+
   const [chestOpen, setChestOpen] = useState(false);
   const [cardSlideIn, setCardSlideIn] = useState(false);
   const [selectedCard, setSelectedCard] = useState(null);
@@ -47,7 +52,7 @@ export default function Home() {
   });
   
 
-  const [character, setCharacter] = useState("");
+  const [character, setCharacter] = useLocalStorage("character", null);
   const myUser = users.find((user) => user.username === character);
   const [myTokens, setMyTokens] = useState(0);
 
@@ -342,7 +347,8 @@ export default function Home() {
                           setHasUnopenedChest(true)
                           console.log("new below")
                           setNewCards(result.data.cards.find((card) => !card.isOpened).cardName)
-                        
+                          setNewCardID(result.data.cards.find((card) => !card.isOpened).id)
+
                         }
                         setMyTokens(result.data.coins)
                       })
@@ -389,8 +395,16 @@ export default function Home() {
             <>
             <p style={{color: "#fff", fontFamily: "Billy", fontSize: 28, paddingTop: 16, marginLeft: 16, marginRight: 16}}>Select Your Card</p>
             <div 
-            onClick={() => {
+            onClick={async () => {
               setSelectedCard(0)
+              try {
+                await axios.post("api/cards/open", {
+                  id: newCardID,
+                }).then((resultingThing) => console.log(resultingThing))
+              } catch (err) {
+                console.error(err);
+              }
+
               setTimeout(async function() {
                 setCardFlipped(true)
                 //Mark this card as isOpen
@@ -442,7 +456,7 @@ export default function Home() {
               width: selectedCard == 2 ? ("calc(100vw - 32px)") : selectedCard != null && selectedCard != 2 ? ("0px") : ("120px"),
               animation: `shake 0.75s cubic-bezier(0.36, 0.07, 0.19, 0.97) infinite`,
               display: 'inline-block', // This is important for transform to work properly
-            }} src={(!cardFlipped || selectedCard != 2)? ("/cards/back.png") : (`/cards/${newCard}`)}/>
+            }} src={(!cardFlipped || selectedCard != 2) ? ("/cards/back.png") : (`/cards/${newCard}.jpg`)}></img>
             </div>
 
             <div 
@@ -470,7 +484,7 @@ export default function Home() {
     width: selectedCard == 1 ? ("calc(100vw - 32px)") : selectedCard != null && selectedCard != 1 ? ("0px") : ("120px"),
     animation: `shake 0.75s cubic-bezier(0.36, 0.07, 0.19, 0.97) infinite`,
     display: 'inline-block', // This is important for transform to work properly
-  }} src={(!cardFlipped || selectedCard != 1) ? ("/cards/back.png") : (`/cards/${newCard}`)} />
+  }} src={(!cardFlipped || selectedCard != 1) ? ("/cards/back.png") : (`/cards/${newCard}.jpg`)} />
 </div>
 
           </>
@@ -631,13 +645,13 @@ export default function Home() {
                       console.log("leaving")
                       setHasLeft(true)
 
-                      // try {
-                      //   await axios.post("/api/markLeft", {
-                      //     driveId: driveId,
-                      //   }).then((resultingThing) => console.log(resultingThing))
-                      // } catch (err) {
-                      //   console.error(err);
-                      // }
+                      try {
+                        await axios.post("/api/markLeft", {
+                          driveId: driveId,
+                        }).then((resultingThing) => console.log(resultingThing))
+                      } catch (err) {
+                        console.error(err);
+                      }
                     }}
                     style={{ fontSize: 24, fontWeight: 500 }}
                     >{!hasLeft ? (`I'm Leaving Now`) : ("Notified Passengers")}
@@ -647,6 +661,8 @@ export default function Home() {
                     </div>
                 </div>
               )}
+
+              <Tabbar />
             </Div100vh>
           </div>
         )}
@@ -693,6 +709,7 @@ export default function Home() {
                 >
                   Select Your Car Club
                   </p>
+                  <div style={{ paddingBottom: "75px" }}>
                   {drivers.map((driver) => {
                     return <div
                     onClick={() => {
@@ -768,7 +785,9 @@ export default function Home() {
                                     </div>
                   </Div100vh>
                   }
+                  </div>
               </Div100vh>
+              <Tabbar />
               </Div100vh>
 
         )}
@@ -907,3 +926,5 @@ export default function Home() {
     </>
   );
 }
+
+export default dynamic(() => Promise.resolve(Home), { ssr: false });
