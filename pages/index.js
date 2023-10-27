@@ -1,4 +1,5 @@
 import Head from "next/head";
+import dynamic from "next/dynamic";
 import Image from "next/image";
 import { Inter } from "next/font/google";
 import styles from "@/styles/Home.module.css";
@@ -9,8 +10,10 @@ import TimePicker from "../components/TimePicker";
 import axios from "axios"
 const inter = Inter({ subsets: ["latin"] });
 import dayjs from 'dayjs';
+import Tabbar from "@/components/Tabbar";
+import { useLocalStorage } from "@uidotdev/usehooks";
 
-export default function Home() {
+function Home() {
   const [time, setTime] = useState(null);
   const [departureTime, setDepartureTime] = useState(null);
   const [driveId, setDriveId] = useState();
@@ -47,7 +50,7 @@ export default function Home() {
   });
   
 
-  const [character, setCharacter] = useState("");
+  const [character, setCharacter] = useLocalStorage("character", null);
   const myUser = users.find((user) => user.username === character);
   const [myTokens, setMyTokens] = useState(0);
 
@@ -639,6 +642,8 @@ export default function Home() {
                     </div>
                 </div>
               )}
+
+              <Tabbar />
             </Div100vh>
           </div>
         )}
@@ -685,6 +690,7 @@ export default function Home() {
                 >
                   Select Your Car Club
                   </p>
+                  <div style={{ paddingBottom: "75px" }}>
                   {drivers.map((driver) => {
                     return <div
                     onClick={() => {
@@ -760,7 +766,9 @@ export default function Home() {
                                     </div>
                   </Div100vh>
                   }
+                  </div>
               </Div100vh>
+              <Tabbar />
               </Div100vh>
         )}
         {departureTime != null && character != "" && !myUser?.isDriver && (
@@ -898,3 +906,5 @@ export default function Home() {
     </>
   );
 }
+
+export default dynamic(() => Promise.resolve(Home), { ssr: false });
