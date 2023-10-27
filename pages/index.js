@@ -16,28 +16,21 @@ export default function Home() {
   const [driveId, setDriveId] = useState();
   const [drives, setDrives] = useState([]);
   const [selectedDrive, setSelectedDrive] = useState(null);
-
-  const [showChest, setShowChest] = useState(false);
-  const [showCards, setShowCards] = useState(false);
+  const [message, setMessage] = useState("good morning");
+  const [hasLeft, setHasLeft] = useState(false);
+  const [hasUnopenedChest, setHasUnopenedChest] = useState(false);
+  const [newCard, setNewCards] = useState("/cards/common/BasicBird.jpg");
+  const [chestOpen, setChestOpen] = useState(false);
+  const [cardSlideIn, setCardSlideIn] = useState(false);
   const [selectedCard, setSelectedCard] = useState(null);
+  const [cardFlipped, setCardFlipped] = useState(false);
 
   const drivers = users.filter((user) => user.isDriver).map((user) => {
     const validDrive = drives?.find(drive => drive.driverId === user.id);
 
-    // console.log(validDrive)
     if(validDrive) {
       const date = dayjs(validDrive.departureTime);
 
-
-      // let hours = date.getUTCHours();
-      // const minutes = date.getUTCMinutes().toString().padStart(2, '0');
-      // const period = hours >= 12 ? 'PM' : 'AM';
-      
-      // // Convert to 12-hour format
-      // hours = hours % 12;
-      // // To handle case of midnight
-      // hours = hours || 12;
-      
       const formattedTime = date.format("HH:mm")
       return {
         ...user,
@@ -56,6 +49,7 @@ export default function Home() {
 
   const [character, setCharacter] = useState("");
   const myUser = users.find((user) => user.username === character);
+  const [myTokens, setMyTokens] = useState(0);
 
   const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
 
@@ -77,6 +71,7 @@ export default function Home() {
     }
 
     return {
+      hours,
       minutes,
       seconds
     };
@@ -89,14 +84,14 @@ export default function Home() {
     }, 1);
     const secondOne = setInterval(() => {
       getDriveDetails(driveId);
-
     }, 1000);
+
     return () => {
       clearInterval(timer)
-      clearInterval(secondOne)
 
     };
   }, [departureTime]);
+
   useEffect(() => {
     const timer = setInterval(() => {
       getAllDriveDetails();
@@ -107,7 +102,7 @@ export default function Home() {
       clearInterval(timer)
 
     };
-  }, []);
+  }, [drives, driveId, departureTime]);
   const addCoin = async () => {
     try {
       await axios.post("/api/coins/add", {
@@ -124,7 +119,46 @@ export default function Home() {
       await axios.post("/api/createTicket", {
         driveId: selectedDrive.driveId,
         username: character,
-      }).then((result) => console.log(result))
+      })
+
+      setDriveDeets(drives.find((drive) => drive.id == selectedDrive.driveId))
+      setDepartureTime(drives.find((drive) => drive.id == selectedDrive.driveId).departureTime)
+ 
+      
+      const hoursSelectedDrive = parseInt(selectedDrive.departureTime.split(":")[0], 10);
+      function computeValue() {
+        let roundedHour = hoursSelectedDrive; // Getting the current hour and rounding it
+        let randomInt = Math.floor(Math.random() * (10 - 7 + 1) + 7); // Getting a random integer between 7 and 10 (inclusive)
+        return ((24 - roundedHour) * (randomInt));
+    }
+        
+      
+      let resultingValue = computeValue();
+      setMessage(`YEAH! +${resultingValue} Tokens`)
+      await axios.post("/api/coins/add", {
+        username: character,
+        amount: resultingValue,
+      });
+
+      setTimeout(() => {
+        setMessage("Good Morning")
+    }, 3000);
+      
+      const incrementByInterval = () => {
+
+        const targetValue = myTokens + resultingValue;
+        const interval = setInterval(() => {
+            setMyTokens(prevValue => {
+                if (prevValue + 1 >= targetValue) {
+                    clearInterval(interval);  // Clear the interval.
+                    return targetValue; // Set the final value.
+                }
+                return prevValue + 1; // Otherwise, increment by 1.
+            });
+        }, 20); // Every 0.5 seconds.
+    }
+    incrementByInterval()
+
     } catch (err) {
       console.error(err);
     }
@@ -133,11 +167,51 @@ export default function Home() {
 
   const confirmDrivingTime = async () => {
     try {
+
+      function computeValue() {
+        let roundedHour = Math.round(time.getHours()); // Getting the current hour and rounding it
+        let randomInt = Math.floor(Math.random() * (10 - 7 + 1) + 7); // Getting a random integer between 7 and 10 (inclusive)
+        return ((24 - roundedHour) * (randomInt));
+    }
+        
+        let result = computeValue();
+
+        try {
+          await axios.post("/api/coins/add", {
+            username: character,
+            amount: result,
+          });
+
+          const incrementByInterval = () => {
+            const targetValue = myTokens + result;
+            const interval = setInterval(() => {
+                setMyTokens(prevValue => {
+                    if (prevValue + 1 >= targetValue) {
+                        clearInterval(interval);  // Clear the interval.
+                        return targetValue; // Set the final value.
+                    }
+                    return prevValue + 1; // Otherwise, increment by 1.
+                });
+            }, 20); // Every 0.5 seconds.
+        }
+        
+        incrementByInterval();
+          
+          // setMyTokens(prevValue => prevValue + result)
+          setMessage(`WOAH +${result} TOKENS!`)
+          setTimeout(() => {
+            setMessage("Good Morning")
+        }, 3000);
+        } catch (err) {
+          console.error(err);
+        }
+        
+
       await axios.post("/api/drive/create", {
         username: character,
         time: time,
       }).then((result) => {
-    
+        setDriveId(result.data.id)
         setDepartureTime(result.data.departureTime)
       })
 
@@ -153,7 +227,9 @@ export default function Home() {
     if(specificID != undefined){ 
     try {
       const { data } = await axios.get(`/api/drive/${parseInt(specificID)}`);
+      
       setDriveDeets(data);
+      // console.log(data)
       setDepartureTime(data.departureTime)
 
     } catch (err) {
@@ -165,10 +241,33 @@ export default function Home() {
     try {
       const { data } = await axios.get(`/api/drive/all`);
       setDrives(data)
+      //console.log(data)
+      //console.log(data.some((drive) => drive.driver.username == character))
+      data.map((drive) => {
+      // console.log(drive.driver.username, character)
+      if(drive.driver.username == character) {
+        // console.log("already have ride")
+        setDriveId(drive.id)
+        setDepartureTime(drive.departureTime)   
+      }
+      if(drive.riders.some((rider) => rider.user.username == character)) {
+        console.log("auto select")
+        // console.log("already have ride")
+        setDriveDeets(drives.find((driveMap) => driveMap.id == drive.id))
+
+        setDriveId(drive.id)
+        setDepartureTime(drive.departureTime)   
+
+      }
+      
+    })
+
     } catch (err) {
       console.error(err);
     }
   }
+
+
 
 
   useEffect(() => {
@@ -184,10 +283,12 @@ export default function Home() {
         <title>Car Club</title>
         <meta name="description" content="Car Club with Friends" />
         <meta name="theme-color" content="#000" />
+        <link rel="manifest" href="/manifest.json" />
 
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
+
       <main style={{ fontFamily: "system-ui, Helvetica" }}>
         {character == "" && (
           <Div100vh
@@ -230,7 +331,28 @@ export default function Home() {
                 }}
               >
                 {users.map((user) => (
-                  <div onClick={() => setCharacter(user.username)} style={{ cursor: "pointer" }}>
+                  <div onClick={async () => {
+                    setCharacter(user.username)
+                    //Actually get tokens here TODO
+
+                    try {
+                      await axios.get(`/api/user/me?username=${user.username}`).then((result) => {
+                        console.log(result.data.cards)
+                        if(result.data.cards.some((card) => !card.isOpened)) {
+                          setHasUnopenedChest(true)
+                          console.log("new below")
+                          setNewCards(result.data.cards.find((card) => !card.isOpened).cardName)
+                        
+                        }
+                        setMyTokens(result.data.coins)
+                      })
+                    } catch (err) {
+                      console.error(err);
+                    }
+
+
+                    getAllDriveDetails()
+                  }} style={{ cursor: "pointer" }}>
                     <img
                       style={{ width: 96, height: 96, objectFit: "cover", borderRadius: 8 }}
                       src={user.profilePhoto}
@@ -247,23 +369,135 @@ export default function Home() {
             <div />
           </Div100vh>
         )}
+        {character != "" && hasUnopenedChest && (
+          <Div100vh style={{backgroundColor: "#000", display: "flex", flexDirection: "column", justifyContent: "space-between", width: "100%", zIndex: 5}}>
+            {!chestOpen && 
+            (
+            <>
+              <p style={{color: "#fff", fontFamily: "Billy", fontSize: 28, paddingTop: 16, marginLeft: 16, marginRight: 16}}>Congrats on being first this morning!</p>
+            <div
+            onClick={() => setChestOpen(true)
+          
+          }
+            style={{flexDirection: "column", width: "100%", display: "flex", alignItems: "center", justifyContent: "center"}}>
+              <img src={"/animations/chest.gif"} style={{backgroundColor: "#000", display: "flex", justifyContent: "center", width: "450px", height: "450px"}}/>
+            </div>
+            <p style={{fontFamily: "Billy", width: "100%", marginBottom: 64, textAlign: "center", fontSize: 24, color: "#fff"}}>Tap to open uwu</p>
+            </>
+            )}
+            {chestOpen && (
+            <>
+            <p style={{color: "#fff", fontFamily: "Billy", fontSize: 28, paddingTop: 16, marginLeft: 16, marginRight: 16}}>Select Your Card</p>
+            <div 
+            onClick={() => {
+              setSelectedCard(0)
+              setTimeout(async function() {
+                setCardFlipped(true)
+                //Mark this card as isOpen
+                
+                
 
+              }, 350);
+              setTimeout(function() {
+                setHasUnopenedChest(false)
+                setChestOpen(false)
+                setCardSlideIn(false)
+                setCardFlipped(false)
+
+
+              }, 5000);
+              
+            }}
+            style={{position: "absolute", justifyContent: "center", display: "flex", alignItems: "center", backgroundColor: "#fff",
+            width: selectedCard == 0 ? ("calc(100vw - 32px)") : selectedCard != null && selectedCard != 0 ? ("0px") : ("100px"),
+            borderRadius: 16, transition: "all 0.3s ease-in-out", bottom: selectedCard == 0 ? (128) : !cardSlideIn ? ("calc(50% + 144px)") : ("calc(50% - 128px)"), left: 16}}>
+            <img style={{
+              width: selectedCard == 0 ? ("calc(100vw - 32px)") : selectedCard != null && selectedCard != 0 ? ("0px") : ("120px"),
+                animation: `shake 0.75s cubic-bezier(0.36, 0.07, 0.19, 0.97) infinite`,
+                transition: "all 0.3s ease-in-out",
+                borderRadius: 16,
+                display: 'inline-block', // This is important for transform to work properly
+            }} src={(!cardFlipped || selectedCard != 0) ? ("/cards/back.png") : (`/cards/${newCard}.jpg`)}
+            />
+            </div>
+
+            
+            <div
+                        onClick={() => {
+                          setSelectedCard(2)
+                          setTimeout(function() {
+                            setCardFlipped(true)
+                          }, 350);
+                        }
+                        }
+
+            style={{position: "absolute", justifyContent: "center", display: "flex", alignItems: "center", backgroundColor: "#fff", width: 100, borderRadius: 16, transition: "all 0.3s ease-in-out", bottom: selectedCard == 2 ? (128) : !cardSlideIn ? ("calc(50% - 400px)") : ("calc(50% - 128px)"), right: selectedCard != 2 ? (16) : ("calc(50vw - 48px)")}}>
+            <img 
+            onLoad={() => setCardSlideIn(true)}
+            
+            style={{
+              transition: "all 0.3s ease-in-out",
+              borderRadius: 16,
+
+              width: selectedCard == 2 ? ("calc(100vw - 32px)") : selectedCard != null && selectedCard != 2 ? ("0px") : ("120px"),
+              animation: `shake 0.75s cubic-bezier(0.36, 0.07, 0.19, 0.97) infinite`,
+              display: 'inline-block', // This is important for transform to work properly
+            }} src={(!cardFlipped || selectedCard != 2)? ("/cards/back.png") : (`/cards/${newCard}`)}/>
+            </div>
+
+            <div 
+                        onClick={() => {setSelectedCard(1)
+                          setTimeout(function() {
+                            setCardFlipped(true)
+                          }, 350);
+                        }}
+
+            style={{
+  position: "absolute",
+  justifyContent: "center",
+  display: "flex",
+  alignItems: "center",
+  backgroundColor: "#fff",
+  width: 100,
+  borderRadius: 16,
+  transition: "all 0.7s ease-in-out",
+  bottom: selectedCard == 1 ? (128) : cardSlideIn ? ("calc(50% - 128px)") : ("calc(50% - 128px)"),
+  right: "calc(50% - 50px)"
+}}>
+  <img style={{
+    transition: "all 0.3s ease-in-out",
+    borderRadius: 16,
+    width: selectedCard == 1 ? ("calc(100vw - 32px)") : selectedCard != null && selectedCard != 1 ? ("0px") : ("120px"),
+    animation: `shake 0.75s cubic-bezier(0.36, 0.07, 0.19, 0.97) infinite`,
+    display: 'inline-block', // This is important for transform to work properly
+  }} src={(!cardFlipped || selectedCard != 1) ? ("/cards/back.png") : (`/cards/${newCard}`)} />
+</div>
+
+          </>
+            )}
+          </Div100vh>
+        )
+        
+        }
         {myUser?.isDriver && (
           <div>
             <Div100vh style={{ backgroundColor: "#000" }}>
+              <div style={{display: "flex", marginLeft: 16, marginRight: 16, alignItems: "center", justifyContent: "space-between"}}>
               <p
                 style={{
                   color: "#fff",
-                  marginLeft: 16,
-                  marginRight: 16,
                   paddingTop: 8,
                   paddingBottom: 16,
                   fontFamily: "Billy",
                   fontSize: 24,
                 }}
               >
-                good morning 
+                {message} 
               </p>
+              <p style={{color: "#000", fontSize: 18, fontWeight: 500, padding: "4px 8px", borderRadius: 16, backgroundColor: "#FFD500"}}>
+                {myTokens}
+              </p>
+              </div>
               {departureTime == null ? (
                 <div
                   style={{
@@ -328,8 +562,10 @@ export default function Home() {
                     height: "100%",
                     backgroundColor: "#fff",
                     borderRadius: "24px 24px 0px 0px",
+                    justifyContent: "space-between"
                   }}
                 >
+                  <div style={{display: "flex", flexDirection: "column", gap: 16}}>
                   <p
                     style={{
                       color: "#000",
@@ -345,8 +581,70 @@ export default function Home() {
                     {timeLeft.seconds}
                   </p>
                   <div style={{ width: "100%", height: "2px", backgroundColor: "#000" }}></div>
-                  <p style={{fontSize: 22}}>Crew: {driveId}</p>
-                  {!driveDeets?.hasLeft && <p>{driveId}</p>}
+                  <p style={{fontSize: 18}}>Crew:</p>
+                  <div style={{display: "flex", alignContent: "center"}}>
+
+                <img style={{width: 64, height: 64, borderRadius: 32}} src={users.find((user) => user.username == character).profilePhoto}/>
+              <div style={{display: "flex", alignContent: "center", justifyContent: "center", marginLeft: 16, flexDirection: "column"}}>
+              <p style={{fontSize: 24, fontWeight: 500}}>
+                    {users.find((user) => user.username == character).username}
+                  </p>
+                  <p style={{fontSize: 18, fontWeight: 500}}>
+                  {drives?.find((drive) => drive?.id == driveId)?.driver?.coins} Tokens
+                  </p>
+              </div>
+               </div>
+                  {drives.find((drive) => drive.id == driveId)?.riders?.map((rider => 
+              <div style={{display: "flex", alignContent: "center"}}>
+                <img style={{width: 64, height: 64, borderRadius: 32}} src={users.find((user) => user.id == rider.userId).profilePhoto}/>
+              <div style={{display: "flex", alignContent: "center", justifyContent: "center", marginLeft: 16, flexDirection: "column"}}>
+              <p style={{fontSize: 24, fontWeight: 500}}>
+                    {users.find((user) => user.id == rider.userId).username}
+                  </p>
+                  <p style={{fontSize: 18, fontWeight: 500}}>
+                    {rider?.user?.coins} Tokens
+                  </p>
+              </div>
+               </div>
+                ))}
+              </div>
+                    <div
+                    onClick={() => console.log("Heading out")}
+                      style={{
+                        backgroundColor: hasLeft ? (`#000`) : ("#FFD500"),
+                        marginBottom: 32,
+                        marginTop: 16,
+                        paddingTop: 16,
+                        borderRadius: 16,
+                        marginBottom: 128,
+                        color: !hasLeft ? (`#000`) : ("#FFD500"),
+                        justifyContent: "center",
+                        alignContent: "center",
+                        display: "flex",
+                        paddingBottom: 16,
+                      }}
+                    >
+
+
+                    <p 
+                    onClick={async () => {
+                      console.log("leaving")
+                      setHasLeft(true)
+
+                      // try {
+                      //   await axios.post("/api/markLeft", {
+                      //     driveId: driveId,
+                      //   }).then((resultingThing) => console.log(resultingThing))
+                      // } catch (err) {
+                      //   console.error(err);
+                      // }
+                    }}
+                    style={{ fontSize: 24, fontWeight: 500 }}
+                    >{!hasLeft ? (`I'm Leaving Now`) : ("Notified Passengers")}
+                    </p>
+                    
+                    
+                    </div>
                 </div>
               )}
             </Div100vh>
@@ -355,22 +653,25 @@ export default function Home() {
 
 
 
-        {!myUser?.isDriver && character != "" && (
+        {!myUser?.isDriver && character != "" && departureTime == null && (
 
  <Div100vh style={{ marginLeft: "25", backgroundColor: "#000" }}>
-                            <p
+              <div style={{display: "flex", marginLeft: 16, marginRight: 16, alignItems: "center", justifyContent: "space-between"}}>
+              <p
                 style={{
-                  color: "white",
-                  marginLeft: 16,
-                  marginRight: 16,
+                  color: "#fff",
                   paddingTop: 8,
                   paddingBottom: 16,
                   fontFamily: "Billy",
                   fontSize: 24,
                 }}
               >
-                good morning
+                {message} 
               </p>
+              <p style={{color: "#000", fontSize: 18, fontWeight: 500, padding: "4px 8px", borderRadius: 16, backgroundColor: "#FFD500"}}>
+                {myTokens}
+              </p>
+              </div>
               <Div100vh style={{  
                 borderRadius: "50", 
                 backgroundColor: "white",
@@ -395,9 +696,9 @@ export default function Home() {
                   {drivers.map((driver) => {
                     return <div
                     onClick={() => {
-                      console.log(drives)
+                      if(driver.departureTime != "--:--") {
                       setSelectedDrive(driver)
-                    
+                      }
                     }}
 
                     style={{
@@ -440,16 +741,168 @@ export default function Home() {
                   }
                   )}
                   {selectedDrive != null &&
-                  <button onClick={getTicket} style={{marginTop: 16, marginLeft: 16, marginRight: 16, padding: 16}}>Claim Ticket {selectedDrive.driveId}</button>
+                  <Div100vh onClick={() => setSelectedDrive(null)} style={{position: "absolute", zIndex: 2, backgroundColor: "rgba(0, 0, 0, 0.5)", bottom: 0, width: "100%"}}>
+
+                  <div style={{width: "100%", zIndex: 2, position: "absolute", bottom: 0, backgroundColor: "#fff", paddingTop: 16, paddingBottom: 16}}>
+                    <p style={{fontFamily: "Billy", fontSize: 30, width: "100%", textAlign: "center"}}>Claim Your Ticket</p>
+                    <img src="https://cloud-nkyuzur5k-hack-club-bot.vercel.app/0ticket.png" style={{width:"calc(100vw - 32px)", marginLeft: 16, marginTop: 24}}/>
+                    <div
+                    onClick={getTicket}
+                    style={{
+                      backgroundColor: "#FFD500",
+                      paddingTop: 16,
+                      borderRadius: 16,
+                      width: "calc(100% - 32px)", marginLeft: 16,
+                      marginTop: 16, marginBottom: 24,
+                      color: "#000",
+                      justifyContent: "center",
+                      alignContent: "center",
+                      display: "flex",
+                      paddingBottom: 16,
+                    }}
+                  >
+                    <p style={{ fontSize: 24, fontWeight: 500 }}>
+                      Confirm Driving Time
+                    </p>
+                  </div>
+                                    </div>
+                  </Div100vh>
                   }
               </Div100vh>
               </Div100vh>
 
         )}
+        {departureTime != null && character != "" && !myUser?.isDriver && (
+          <div>
+          <Div100vh style={{ backgroundColor: "#000" }}>
+            <div style={{display: "flex", marginLeft: 16, marginRight: 16, alignItems: "center", justifyContent: "space-between"}}>
+            <p
+              style={{
+                color: "#fff",
+                paddingTop: 8,
+                paddingBottom: 16,
+                fontFamily: "Billy",
+                fontSize: 24,
+              }}
+            >
+              {message} 
+            </p>
+            <p style={{color: "#000", fontSize: 18, fontWeight: 500, padding: "4px 8px", borderRadius: 16, backgroundColor: "#FFD500"}}>
+              {myTokens}
+            </p>
+            </div>
+            {departureTime == null ? (
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  flexDirection: "column",
+                  gap: 16,
+                  padding: 16,
+                  height: "100%",
+                  backgroundColor: "#fff",
+                  borderRadius: "24px 24px 0px 0px",
+                }}
+              >
+                <p style={{ fontSize: 38, marginLeft: 16, marginTop: 16, fontFamily: "Billy" }}>
+                  When are you departing?
+                </p>
+                <TimePicker onTimeChange={setTime} />
+                <div style={{ marginBottom: 16 }}>
+                  <div
+                    style={{
+                      backgroundColor: "#000",
+                      paddingTop: 16,
+                      borderRadius: 16,
+                      color: "#fff",
+                      justifyContent: "center",
+                      alignContent: "center",
+                      display: "flex",
+                      paddingBottom: 16,
+                    }}
+                  >
+                    <p onClick={confirmDrivingTime} style={{ fontSize: 24, fontWeight: 500 }}>
+                      Confirm Driving Time
+                    </p>
+                  </div>
+                  <div>
+                    <div
+                      style={{
+                        backgroundColor: "#ECECEC",
+                        marginBottom: 32,
+                        marginTop: 16,
+                        paddingTop: 16,
+                        borderRadius: 16,
+                        color: "#000",
+                        justifyContent: "center",
+                        alignContent: "center",
+                        display: "flex",
+                        paddingBottom: 16,
+                      }}
+                    >
+                      <p style={{ fontSize: 24, fontWeight: 500 }}>I'm Not Driving In</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 16,
+                  padding: 16,
+                  height: "100%",
+                  backgroundColor: "#fff",
+                  borderRadius: "24px 24px 0px 0px",
+                }}
+              >
+                <p
+                  style={{
+                    color: "#000",
+                    fontSize: 96,
+                    width: "100%",
+                    textAlign: "center",
+                    fontWeight: 600,
+                  }}
+                >
+                  {timeLeft.hours > 0 ? timeLeft.hours + ":" : ""}
+                  {timeLeft.minutes < 10 && "0"}
+                  {timeLeft.minutes}:{timeLeft.seconds < 10 && "0"}
+                  {timeLeft.seconds}
+                </p>
+                <div style={{ width: "100%", height: "2px", backgroundColor: "#000" }}></div>
+                <p style={{fontSize: 18}}>Crew:</p>
+                <div style={{display: "flex", alignContent: "center"}}>
 
-        
-
-        
+              <img style={{width: 64, height: 64, borderRadius: 32}} src={users.find((user) => user.username == driveDeets.driver.username)?.profilePhoto}/>
+            <div style={{display: "flex", alignContent: "center", justifyContent: "center", marginLeft: 16, flexDirection: "column"}}>
+            <p style={{fontSize: 24, fontWeight: 500}}>
+                  {users.find((user) => user.username == driveDeets.driver.username)?.username}
+                </p>
+                <p style={{fontSize: 18, fontWeight: 500}}>
+                {driveDeets.driver.coins} Tokens
+                </p>
+            </div>
+             </div>
+                {drives.find((drive) => drive.id == driveDeets.id)?.riders?.map((rider => 
+            <div style={{display: "flex", alignContent: "center"}}>
+              <img style={{width: 64, height: 64, borderRadius: 32}} src={users.find((user) => user.id == rider.userId).profilePhoto}/>
+            <div style={{display: "flex", alignContent: "center", justifyContent: "center", marginLeft: 16, flexDirection: "column"}}>
+            <p style={{fontSize: 24, fontWeight: 500}}>
+                  {users.find((user) => user.id == rider.userId).username}
+                </p>
+                <p style={{fontSize: 18, fontWeight: 500}}>
+                  {rider?.user?.coins} Tokens
+                </p>
+            </div>
+             </div>
+              ))}
+              </div>
+            )}
+          </Div100vh>
+        </div>
+        )}
       </main>
     </>
   );
