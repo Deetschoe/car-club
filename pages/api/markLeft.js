@@ -1,5 +1,7 @@
 import prisma from "@/lib/db";
 import dayjs from "dayjs";
+import fs from "fs";
+import { sample } from "underscore";
 
 export default async function handler(req, res) {
   const { driveId } = req.body;
@@ -23,17 +25,20 @@ export default async function handler(req, res) {
     },
   });
 
-  if (drives.length > 0) return res.status(200).json("ok");
+  if (drives.length > 1) return res.status(200).json("ok");
+
+  const allCards = JSON.parse(fs.readFileSync("./cards.json"));
+  const randomCard = sample(allCards);
 
   // this is the first departure of the day
   drive.riders.forEach(async (rider) => {
     await prisma.chest.create({
-      data: { user: { connect: { username: rider.username } }, cardName: "random-card" },
+      data: { user: { connect: { username: rider.username } }, cardName: randomCard.name },
     });
   });
 
   await prisma.chest.create({
-    data: { user: { connect: { username: drive.driver.username } }, cardName: "random-card" },
+    data: { user: { connect: { username: drive.driver.username } }, cardName: randomCard.name },
   });
 
   return res.status(200).json("ok");
