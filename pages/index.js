@@ -407,13 +407,12 @@ function Home() {
                 console.error(err);
               }
 
-              setTimeout(async function() {
-                setCardFlipped(true)
-                //Mark this card as isOpen
-                
-                
+              console.log("here");
 
-              }, 350);
+              setTimeout(function() {
+                setCardFlipped(true)
+              }, 3500);
+
               setTimeout(function() {
                 setHasUnopenedChest(false)
                 setChestOpen(false)
