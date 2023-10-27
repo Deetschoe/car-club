@@ -7,8 +7,8 @@ const Tabbar = () => {
   return (
     <div
       style={{
-        height: "50px",
-        background: "grey",
+        height: "92px",
+        background: "#F2F2F2",
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
@@ -21,15 +21,35 @@ const Tabbar = () => {
       }}
     >
       <button style={{
-        backgroundColor: router.pathname === "/" ? "red" : "white",
+        opacity: router.pathname === "/" ? 1 : 0.33,
+        border: "none"
       }}>
-        <a href="/">Home</a>
+        <a href="/">
+        <img width={52} height={52} src="https://cloud-nto2cwnb5-hack-club-bot.vercel.app/0shuttle.svg"/>
+
+        </a>
       </button>
-      <button>
-        <a href="/leaderboard">Leaderboard</a>
+      <button style={{
+                opacity: router.pathname === "/leaderboard" ? 1 : 0.33,
+                border: "none"
+
+      }}>
+        <a href="/leaderboard">
+          <img width={52} height={52} src="https://cloud-nto2cwnb5-hack-club-bot.vercel.app/1chart.svg"/>
+        </a>
       </button>
-      <button>
-        <a href="/profile">Profile</a>
+      <button style={{border: "none"}}>
+        <a href="/profile"
+        style={{
+          opacity: router.pathname === "/profile" ? 1 : 0.33,
+          border: "none"
+
+        }} 
+        >
+          <img src={"https://cloud-1jx8fszou-hack-club-bot.vercel.app/0account_circle.svg"} width={52} height={52} style={{
+          border: "none",
+          }} />
+        </a>
       </button>
     </div>
   );

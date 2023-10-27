@@ -52,7 +52,9 @@ function Home() {
   });
   
 
-  const [character, setCharacter] = useLocalStorage("character", null);
+  // const [character, setCharacter] = useLocalStorage("character", "");
+  const [character, setCharacter] = useState("");
+
   const myUser = users.find((user) => user.username === character);
   const [myTokens, setMyTokens] = useState(0);
 
@@ -762,7 +764,7 @@ function Home() {
                       paddingTop: 16,
                       borderRadius: 16,
                       width: "calc(100% - 32px)", marginLeft: 16,
-                      marginTop: 16, marginBottom: 24,
+                      marginTop: 16, marginBottom: 96,
                       color: "#000",
                       justifyContent: "center",
                       alignContent: "center",
@@ -780,6 +782,7 @@ function Home() {
                   </div>
               </Div100vh>
               <Tabbar />
+
               </Div100vh>
         )}
         {departureTime != null && character != "" && !myUser?.isDriver && (
@@ -910,6 +913,8 @@ function Home() {
               ))}
               </div>
             )}
+                          <Tabbar />
+
           </Div100vh>
         </div>
         )}
