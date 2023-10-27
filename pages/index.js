@@ -244,11 +244,13 @@ function Home() {
     }}
   }
 
+
+
   const getAllDriveDetails = async () => {
     try {
       const { data } = await axios.get(`/api/drive/all`);
       setDrives(data)
-      //console.log(data)
+      console.log(data)
       //console.log(data.some((drive) => drive.driver.username == character))
       data.map((drive) => {
       // console.log(drive.driver.username, character)
@@ -438,14 +440,29 @@ function Home() {
 
             
             <div
-                        onClick={() => {
-                          setSelectedCard(2)
-                          setTimeout(function() {
-                            setCardFlipped(true)
-                          }, 350);
-                        }
-                        }
+              onClick={async () => {
+                setSelectedCard(2)
+                try {
+                  await axios.post("api/cards/open", {
+                    id: newCardID,
+                  }).then((resultingThing) => console.log(resultingThing))
+                } catch (err) {
+                  console.error(err);
+                }
 
+                setTimeout(function() {
+                  setCardFlipped(true)
+                }, 3500);
+
+                setTimeout(function() {
+                  setHasUnopenedChest(false)
+                  setChestOpen(false)
+                  setCardSlideIn(false)
+                  setCardFlipped(false)
+
+
+                }, 5000);
+              }}
             style={{position: "absolute", justifyContent: "center", display: "flex", alignItems: "center", backgroundColor: "#fff", width: 100, borderRadius: 16, transition: "all 0.3s ease-in-out", bottom: selectedCard == 2 ? (128) : !cardSlideIn ? ("calc(50% - 400px)") : ("calc(50% - 128px)"), right: selectedCard != 2 ? (16) : ("calc(50vw - 48px)")}}>
             <img 
             onLoad={() => setCardSlideIn(true)}
@@ -461,12 +478,31 @@ function Home() {
             </div>
 
             <div 
-                        onClick={() => {setSelectedCard(1)
-                          setTimeout(function() {
-                            setCardFlipped(true)
-                          }, 350);
-                        }}
+              onClick={async () => {
+                setSelectedCard(1)
+                try {
+                  await axios.post("api/cards/open", {
+                    id: newCardID,
+                  }).then((resultingThing) => console.log(resultingThing))
+                } catch (err) {
+                  console.error(err);
+                }
 
+                console.log("here");
+
+                setTimeout(function() {
+                  setCardFlipped(true)
+                }, 3500);
+
+                setTimeout(function() {
+                  setHasUnopenedChest(false)
+                  setChestOpen(false)
+                  setCardSlideIn(false)
+                  setCardFlipped(false)
+
+
+                }, 5000);
+              }}
             style={{
   position: "absolute",
   justifyContent: "center",

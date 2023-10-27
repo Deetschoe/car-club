@@ -2,6 +2,11 @@ import prisma from "@/lib/db";
 import dayjs from "dayjs";
 import fs from "fs";
 import { sample } from "underscore";
+import UTC from "dayjs/plugin/utc"
+import Timezone from "dayjs/plugin/timezone"
+dayjs.extend(UTC)
+dayjs.extend(Timezone)
+dayjs.tz.setDefault("America/New_York")
 
 export default async function handler(req, res) {
   const { driveId } = req.body;
