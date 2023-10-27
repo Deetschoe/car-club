@@ -22,6 +22,7 @@ export default async function handler(req, res) {
         gte: dayjs().startOf("day").toDate(),
         lte: dayjs(),
       },
+      hasLeft: true,
     },
   });
 
